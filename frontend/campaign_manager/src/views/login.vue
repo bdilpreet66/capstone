@@ -250,14 +250,12 @@ import store from "@/store/index.js";
             
           axios.post('/api/user/account/login/',data)
           .then(function(response) {
-                console.log(response["data"]);
                 store.dispatch("executeUpdateToken",response["data"]["key"]);
                 axios.defaults.headers.common['Authorization'] = 'Token '+response["data"]["key"];
                 axios.get('/api/user/account/get_info/')
                 .then(function(response) {
-                      console.log(response)
                       store.dispatch("executeUpdateProfile",response["data"]);
-                      router.replace({ path: 'dashboard' })
+                      router.replace({ path: 'dashboard' });
                 })
                 .catch(function(error) {
                     if (error.response) {
