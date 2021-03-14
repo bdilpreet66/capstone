@@ -1,5 +1,8 @@
 <template>
   <v-app>
+  <div id="screen" style="height:100vh; width:100vw; background-color:black; position: absolute; z-index:999; visibility:hidden">
+    <video autoplay style="heigth:100%; width:100%;"></video>
+  </div>
     <Navbar v-if="['login'].indexOf($route.name) == -1" />
     <v-app-bar
       app
@@ -45,9 +48,10 @@
   </v-app>
 </template>
 
+
 <script>
 import Navbar from "@/components/Navbar"
-// import store from "@/store/index"
+
 export default {
   name: 'App',
   components: { Navbar },
@@ -76,6 +80,6 @@ export default {
   },
   computed: {
     
-    }
+  },
 };
 </script>

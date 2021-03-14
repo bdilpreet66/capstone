@@ -212,7 +212,6 @@
 import axios from 'axios';
 import router from "@/router/index.js";
 import store from "@/store/index.js";
-
   export default {
     name: 'Login',
     data: () => {
@@ -249,15 +248,16 @@ import store from "@/store/index.js";
           axios.defaults.baseURL = this.$store.state.baseURL;
           axios.defaults.headers.post['Content-Type'] = 'application/json';
             
-          axios.post('/api/api-token-auth/',data)
+          axios.post('/api/user/account/login/',data)
           .then(function(response) {
-                store.dispatch("executeUpdateToken",response["data"]["token"]);
-                axios.defaults.headers.common['Authorization'] = 'Token '+response["data"]["token"];
+                console.log(response["data"]);
+                store.dispatch("executeUpdateToken",response["data"]["key"]);
+                axios.defaults.headers.common['Authorization'] = 'Token '+response["data"]["key"];
                 axios.get('/api/user/account/get_info/')
                 .then(function(response) {
                       console.log(response)
                       store.dispatch("executeUpdateProfile",response["data"]);
-                      router.replace({ name: 'dashboard' })
+                      router.replace({ path: 'dashboard' })
                 })
                 .catch(function(error) {
                     if (error.response) {
@@ -309,4 +309,3 @@ import store from "@/store/index.js";
 }
   
 </script>
-

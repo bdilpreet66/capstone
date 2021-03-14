@@ -13,7 +13,9 @@ export default new Vuex.Store({
             user_name: "user",
             ppic: "../assets/logo.png",
             email: "user"
-        }
+        },
+        start_cam: false,
+        cam_available: false,
     },
     mutations: {
         updateToken: (state, payload) => {

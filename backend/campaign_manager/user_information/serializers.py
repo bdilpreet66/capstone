@@ -6,6 +6,11 @@ from .models import Team, Profile, Package
 
 # write your serializers bellow
 
+class getUserTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = '__all__'
+
 class GetUserSerailizer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User

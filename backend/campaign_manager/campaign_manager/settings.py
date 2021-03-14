@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'user_information'
+    'user_information',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -50,9 +51,10 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -60,6 +62,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'campaign_manager.urls'
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8080',
+    'https://localhost:8080',
+    'http://localhost:5000'
+)
 
 TEMPLATES = [
     {
