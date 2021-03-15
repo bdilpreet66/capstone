@@ -26,7 +26,7 @@
 import { OVERRIDE_LAYOUT_CONFIG } from "@/core/services/store/config.module";
 
 export default {
-  name: "MetronicVue",
+  name: "Vue",
   mounted() {
     /**
      * this is to override the layout config using saved data from localStorage
