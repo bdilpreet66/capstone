@@ -5,13 +5,13 @@ from rest_framework.authentication import (SessionAuthentication,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Contact
-from .serializers import getContactSerializer
+from .models import Contact, contactList
+from .serializers import getContactSerializer, getContactListSerializer
 
 # Create your views here.
 
-class getToekenViewset(viewsets.ViewSet):
-    authentication_classes = (TokenAuthentication,)
+class getContactViewset(viewsets.ViewSet):
+    # authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def list(self,request):
@@ -39,6 +39,7 @@ class getToekenViewset(viewsets.ViewSet):
     def update(self,request,pk):
         data = request.data
         obj = Contact.objects.get(id=pk)
+        print(data['first_name'])
         if obj.user == request.user:
             obj.first_name = data['first_name'],
             obj.last_name = data['last_name'],
@@ -65,4 +66,47 @@ class BulkUserDeleteViewset(viewsets.ViewSet):
         data = request.data
         for i in data['blukList']:
             Contact.objects.get(id=i).delete()
+        return Response('success')
+
+class getContactListViewset(viewsets.ViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self,request):
+        queryset = contactList.objects.filter(user=request.user)
+        serializer = getContactListSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+    def create(self,request):
+        data = request.data
+        user = request.user
+        obj = contactList.objects.create(
+            user = user,
+            name = data['name'],
+            ref = data['ref'],
+            description = data['description']
+        )
+        for i in data['lis']:
+            obj.contact.add(Contact.objects.get(id=i))
+        obj.save()
+        serializer = getContactListSerializer(obj,many=False)
+        return Response(serializer.data)
+
+    def update(self,request,pk):
+        data = request.data
+        obj = contactList.objects.get(id=pk)
+        if obj.user == request.user:
+            name = data['name'],
+            ref = data['ref'],
+            description = data['description']
+        for i in data['removelis']:
+            obj.contact.remove(Contact.objects.get(id=i))
+        for i in data['addlis']:
+            obj.contact.add(Contact.objects.get(id=i))
+        obj.save()
+        serializer = getContactListSerializer(obj,many=False)
+        return Response(serializer.data)
+
+    def destroy(self,request,pk):
+        contactList.objects.get(id=pk).delete()
         return Response('success')

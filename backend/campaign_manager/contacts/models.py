@@ -15,3 +15,13 @@ class Contact(models.Model):
     
     def __Str__(self):
         return self.id
+
+class contactList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    contact = models.ManyToManyField(Contact, blank=True)
+    name = models.CharField(max_length=255,default="")
+    ref = models.CharField(max_length=255,default="")
+    description = models.CharField(max_length=255,default="")
+    
+    def __Str__(self):
+        return self.id
