@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'user_information',
     'corsheaders',
     'contacts',
+    'campaigns',
 ]
 
 REST_FRAMEWORK = {

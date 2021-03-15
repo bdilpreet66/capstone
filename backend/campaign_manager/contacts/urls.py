@@ -8,7 +8,7 @@ router.register(r'manage',getContactViewset,basename='manageContact')
 router.register(r'bulk/delete',BulkUserDeleteViewset,basename='bulkDeleteContacts')
 router.register(r'list',getContactListViewset,basename='manageList')
 
-app_name = 'user'
+app_name = 'contacts'
 
 urlpatterns = [
 ]

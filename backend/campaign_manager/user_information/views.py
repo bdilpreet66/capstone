@@ -18,15 +18,16 @@ from .serializers import (CreateUserSerializer, GetUserSerailizer, getUserTokenS
 class getToekenViewset(viewsets.ViewSet):
     def create(self,request):
         data = request.data
-        print(data)
         user = authenticate(username=data["username"], password=data["password"])
         queryset = Token.objects.get(user=user)
-        if user is not None:
-            try:
+        try:
+            if user is not None:
                 serializer = getUserTokenSerializer(queryset, many=False)
                 return Response(serializer.data)
-            except:
+            else:
                 return Response(status_code=404)
+        except:
+            return Response(status_code=404)
 
 
 class SignUpViewSet(viewsets.ModelViewSet):

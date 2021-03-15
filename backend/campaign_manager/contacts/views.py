@@ -11,7 +11,7 @@ from .serializers import getContactSerializer, getContactListSerializer
 # Create your views here.
 
 class getContactViewset(viewsets.ViewSet):
-    # authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def list(self,request):
