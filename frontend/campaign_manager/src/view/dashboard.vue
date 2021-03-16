@@ -1,20 +1,20 @@
 <template>
-  <div class="Dashboard"></div>
+    <div
+        id="kt_content"
+        class="content d-flex flex-column flex-column-fluid"
+    >
+    </div>
 </template>
 
 <script>
-// import router from "@/router/index.js";
-// import store from "@/store/index.js";
-
-// if(store.state.token == ""){
-//     router.replace({ name: 'login' })
-// }
 
 export default {
-    name: "Dashboard",
-    data: () => {
-      return {
-      }
-    }
-}
+  name: "Dashboard",
+  beforeMount() {
+  },
+  methods: {
+  },
+  computed: {
+  },
+};
 </script>

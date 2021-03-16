@@ -5,7 +5,7 @@
     v-bind:class="headerClasses"
   >
     <!--begin::Logo-->
-    <a href="/">
+    <a href="/dashboard">
       <img alt="Logo" :src="headerLogo" class="logo-default max-h-30px" />
     </a>
     <!--end::Logo-->

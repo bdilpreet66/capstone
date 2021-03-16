@@ -16,6 +16,11 @@ var router = new Router({
         name: 'Dashboard',
         component: () =>
             import ("@/view/dashboard.vue")
+    }, {
+        path: "/contacts",
+        name: 'Contacts',
+        component: () =>
+            import ("@/view/contacts.vue")
     }, ]
 });
 

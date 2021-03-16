@@ -130,9 +130,9 @@
                 <input
                   class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8"
                   type="text"
-                  placeholder="Fullname"
-                  name="fullname"
-                  ref="fullname"
+                  placeholder="Username"
+                  name="username"
+                  ref="username"
                   autocomplete="off"
                 />
               </div>
@@ -274,18 +274,26 @@ import SubmitButton from "@/assets/plugins/formvalidation/dist/es6/plugins/Submi
 
 import KTUtil from "@/assets/js/components/util";
 import { mapGetters, mapState } from "vuex";
-import { LOGOUT, REGISTER } from "@/core/services/store/auth.module";
 import Swal from "sweetalert2";
 import axios from "axios";
-import store from "@/core/services/store/store.js"
-import router from "@/router.js"
+import store from "@/core/services/store/store.js";
+import router from "@/router.js";
+import Vue from 'vue'
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
+
+if(Vue.$cookies.get("remember_key")){
+  if(Vue.$cookies.get("key") != null){
+    store.dispatch("executeUpdateToken", Vue.$cookies.get("key"));
+    router.replace({ name: "Dashboard" });
+  }
+}
 
 export default {
   name: "login",
   data() {
     return {
       state: "signin",
-      // Remove this dummy login info
       form: {
         email: "",
         password: "",
@@ -335,10 +343,10 @@ export default {
 
     this.fv1 = formValidation(signup_form, {
       fields: {
-        fullname: {
+        username: {
           validators: {
             notEmpty: {
-              message: "Full name is required",
+              message: "Username is required",
             },
           },
         },
@@ -356,6 +364,10 @@ export default {
           validators: {
             notEmpty: {
               message: "Password is required",
+            },
+            stringLength: {
+              min: 10,
+              message: "The bio must be less than 200 characters",
             },
           },
         },
@@ -414,22 +426,27 @@ export default {
       };
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
       axios.defaults.headers.post["Content-Type"] = "application/json";
-      axios.post("api/user/account/login/", data)
+      axios
+        .post("api/user/account/login/", data)
         .then(function (response) {
-          store.dispatch("executeUpdateToken",response["data"]["key"]);
-          axios.defaults.headers.common['Authorization'] = 'Token '+response["data"]["key"];
-          axios.get('/api/user/account/get_info/')
-          .then(function(response) {
-                console.log(response)
-                store.dispatch("executeUpdateProfile",response["data"]);
-                router.replace({ name: 'Dashboard' })
-                // this.$router.push({ name: "Dashboard" })
-          })
-          .catch(function(error) {
+          store.dispatch("executeUpdateToken", response["data"]["key"]);
+          Vue.$cookies.set("key",response["data"]["key"], -1);
+          Vue.$cookies.set("remember_key",true, -1);
+          axios.defaults.headers.common["Authorization"] =
+            "Token " + response["data"]["key"];
+          axios
+            .get("/api/user/account/get_info/")
+            .then(function (response) {
+              console.log(response);
+              store.dispatch("executeUpdateProfile", response["data"]);
+              router.replace({ name: "Dashboard" });
+              // this.$router.push({ name: "Dashboard" })
+            })
+            .catch(function (error) {
               if (error.response) {
-                console.log(error.response)
+                console.log(error.response);
               }
-          })
+            });
         })
         .catch(function (error) {
           if (error.response) {
@@ -455,37 +472,46 @@ export default {
     });
 
     this.fv1.on("core.form.valid", () => {
-      const email = this.$refs.remail.value;
-      const password = this.$refs.rpassword.value;
+      var form = KTUtil.getById("kt_login_signup_form")
+      var data = []
+      for(var i=0; i<form.length;i++){
+          data.push(form[i].value)
+      }
+      data = {
+        email: data[1],
+        username: data[0],
+        password: data[2],
+      };
 
-      // clear existing errors
-      this.$store.dispatch(LOGOUT);
+      axios.defaults.baseURL = "http://127.0.0.1:8000/";
+      axios.defaults.headers.post["Content-Type"] = "application/json";
 
-      // set spinner to submit button
-      const submitButton = this.$refs["kt_login_signup_submit"];
-      submitButton.classList.add("spinner", "spinner-light", "spinner-right");
-
-      // dummy delay
-      setTimeout(() => {
-        // send register request
-        this.$store
-          .dispatch(REGISTER, {
-            email: email,
-            password: password,
-          })
-          .then(() => this.$router.push({ name: "dashboard" }));
-
-        submitButton.classList.remove(
-          "spinner",
-          "spinner-light",
-          "spinner-right"
-        );
-      }, 2000);
+      axios.post("api/user/account/signup/", data)
+        .then(function () {
+          Swal.fire({
+            title: "Success",
+            text: "Account created successfully",
+            icon: "success",
+            confirmButtonClass: "btn btn-secondary",
+            heightAuto: false,
+          });
+        })
+        .catch(function (error) {
+          if (error.response) {
+            Swal.fire({
+              title: "Error",
+              text: "Please, provide correct details!",
+              icon: "error",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            });
+          }
+        });
     });
 
     this.fv1.on("core.form.invalid", () => {
       Swal.fire({
-        title: "",
+        title: "Error",
         text: "Please, provide correct data!",
         icon: "error",
         confirmButtonClass: "btn btn-secondary",

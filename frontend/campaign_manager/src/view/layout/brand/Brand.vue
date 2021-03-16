@@ -2,7 +2,7 @@
   <!-- begin:: Aside -->
   <div class="brand flex-column-auto" id="kt_brand" ref="kt_brand">
     <div class="brand-logo">
-      <router-link to="/">
+      <router-link to="/dashboard">
         <img :src="siteLogo()" alt="Logo" />
       </router-link>
     </div>

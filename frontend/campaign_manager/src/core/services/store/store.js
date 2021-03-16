@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         token: "",
+        is_authenticated: false,
         baseURL: "http://127.0.0.1:8000",
         profile: {
             user_name: "user",
@@ -14,15 +15,21 @@ export default new Vuex.Store({
         },
         start_cam: false,
         cam_available: false,
+        contacts: [],
     },
     mutations: {
         updateToken: (state, payload) => {
             state.token = payload;
+            state.is_authenticated = true;
         },
         updateProfile: (state, payload) => {
             // state.profile.ppic = state.baseURL + payload['profile_pic'];
             state.profile.user_name = payload['username'];
             state.profile.email = payload['email'];
+        },
+        updateContact: (state, payload) => {
+            console.log(payload)
+            state.contacts = payload;
         },
     },
     actions: {
@@ -31,6 +38,9 @@ export default new Vuex.Store({
         },
         executeUpdateProfile: (context, payload) => {
             context.commit("updateProfile", payload)
+        },
+        executeUpdateContact: (context, payload) => {
+            context.commit("updateContact", payload)
         },
     },
     modules: {}
