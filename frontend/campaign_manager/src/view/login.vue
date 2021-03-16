@@ -167,11 +167,17 @@
                 />
               </div>
               <div class="form-group">
-                <label class="checkbox checkbox-outline checkbox-white text-white m-0">
+                <label
+                  class="checkbox checkbox-outline checkbox-white text-white m-0"
+                >
                   <input type="checkbox" name="agree" />
                   <span class="mr-2"></span>
                   I Agree the
-                  <a href="#" class="ml-2 text-white opacity-30 font-weight-normal">terms and conditions</a>.
+                  <a
+                    href="#"
+                    class="ml-2 text-white opacity-30 font-weight-normal"
+                    >terms and conditions</a
+                  >.
                 </label>
               </div>
               <div class="pb-lg-0 pb-5 mt-6">
@@ -197,9 +203,7 @@
           <div class="login-form login-forgot">
             <div class="mb-20">
               <h3 class="opacity-40 font-weight-normal">Forgot Password</h3>
-              <p class="opacity-40">
-                Enter your username to send reset email:
-              </p>
+              <p class="opacity-40">Enter your username to send reset email:</p>
             </div>
             <!--begin::Form-->
             <form
@@ -227,7 +231,7 @@
                   autocomplete="off"
                 />
               </div>
-              
+
               <div class="pb-lg-0 pb-5 mt-6">
                 <button
                   type="button"
@@ -270,8 +274,11 @@ import SubmitButton from "@/assets/plugins/formvalidation/dist/es6/plugins/Submi
 
 import KTUtil from "@/assets/js/components/util";
 import { mapGetters, mapState } from "vuex";
-import { LOGIN, LOGOUT, REGISTER } from "@/core/services/store/auth.module";
+import { LOGOUT, REGISTER } from "@/core/services/store/auth.module";
 import Swal from "sweetalert2";
+import axios from "axios";
+import store from "@/core/services/store/store.js"
+import router from "@/router.js"
 
 export default {
   name: "login",
@@ -401,31 +408,40 @@ export default {
     });
 
     this.fv.on("core.form.valid", () => {
-      var email = this.form.email;
-      var password = this.form.password;
-
-      // clear existing errors
-      this.$store.dispatch(LOGOUT);
-
-      // set spinner to submit button
-      const submitButton = this.$refs["kt_login_signin_submit"];
-      submitButton.classList.add("spinner", "spinner-light", "spinner-right");
-
-      // dummy delay
-      setTimeout(() => {
-        // send login request
-        this.$store
-          .dispatch(LOGIN, { email, password })
-          // go to which page after successfully login
-          .then(() => this.$router.push({ name: "dashboard" }))
-          .catch(() => {});
-
-        submitButton.classList.remove(
-          "spinner",
-          "spinner-light",
-          "spinner-right"
-        );
-      }, 2000);
+      var data = {
+        username: this.form.email,
+        password: this.form.password,
+      };
+      axios.defaults.baseURL = "http://127.0.0.1:8000/";
+      axios.defaults.headers.post["Content-Type"] = "application/json";
+      axios.post("api/user/account/login/", data)
+        .then(function (response) {
+          store.dispatch("executeUpdateToken",response["data"]["key"]);
+          axios.defaults.headers.common['Authorization'] = 'Token '+response["data"]["key"];
+          axios.get('/api/user/account/get_info/')
+          .then(function(response) {
+                console.log(response)
+                store.dispatch("executeUpdateProfile",response["data"]);
+                router.replace({ name: 'Dashboard' })
+                // this.$router.push({ name: "Dashboard" })
+          })
+          .catch(function(error) {
+              if (error.response) {
+                console.log(error.response)
+              }
+          })
+        })
+        .catch(function (error) {
+          if (error.response) {
+            Swal.fire({
+              title: "Error",
+              text: "Please, provide correct details!",
+              icon: "error",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            });
+          }
+        });
     });
 
     this.fv.on("core.form.invalid", () => {

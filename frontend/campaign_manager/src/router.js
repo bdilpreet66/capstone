@@ -3,11 +3,20 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-export default new Router({
+var router = new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
     routes: [{
         path: "/",
         name: 'login',
         component: () =>
             import ("@/view/login.vue")
+    }, {
+        path: "/dashboard",
+        name: 'Dashboard',
+        component: () =>
+            import ("@/view/dashboard.vue")
     }, ]
 });
+
+export default router;
