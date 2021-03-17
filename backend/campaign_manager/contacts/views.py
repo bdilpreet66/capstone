@@ -41,13 +41,13 @@ class getContactViewset(viewsets.ViewSet):
         obj = Contact.objects.get(id=pk)
         print(data['first_name'])
         if obj.user == request.user:
-            obj.first_name = data['first_name'],
-            obj.last_name = data['last_name'],
-            obj.email = data['email'],
-            obj.mobile = data['mobile'],
-            obj.address = data['address'],
-            obj.bank = data['bank'],
-            obj.ref = data['ref'],
+            obj.first_name = data['first_name']
+            obj.last_name = data['last_name']
+            obj.email = data['email']
+            obj.mobile = data['mobile']
+            obj.address = data['address']
+            obj.bank = data['bank']
+            obj.ref = data['ref']
             obj.desc = data['desc']
         obj.save()
         serializer = getContactSerializer(obj,many=False)

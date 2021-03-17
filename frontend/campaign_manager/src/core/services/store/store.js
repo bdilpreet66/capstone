@@ -16,6 +16,12 @@ export default new Vuex.Store({
         start_cam: false,
         cam_available: false,
         contacts: [],
+        selectedContact: null,
+        contactsPageControls: {
+            table: true,
+            create: false,
+            update: false
+        }
     },
     mutations: {
         updateToken: (state, payload) => {
@@ -28,7 +34,6 @@ export default new Vuex.Store({
             state.profile.email = payload['email'];
         },
         updateContact: (state, payload) => {
-            console.log(payload)
             state.contacts = payload;
         },
     },
