@@ -7,21 +7,44 @@ from rest_framework.response import Response
 
 from .models import Contact, contactList
 from .serializers import getContactSerializer, getContactListSerializer
+from rest_framework import generics
+
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 # Create your views here.
+
+class ContactTable(generics.ListAPIView):
+    serializer_class = getContactSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    pagination_classes = LimitOffsetPagination
+    filter_backends = (OrderingFilter, SearchFilter)
+    search_fields = ('address', 'bank', 'desc', 'email', 'first_name', 'last_name', 'mobile', 'ref')
+    ordering_fields = ('first_name', 'last_name','email')
+
+    def get_queryset(self):
+        """
+        restricts the returned contacts to a given user
+        """
+        queryset = Contact.objects.filter(user=self.request.user)
+        return queryset
 
 class getContactViewset(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def list(self,request):
-        queryset = Contact.objects.filter(user=request.user)
+        queryset = Contact.objects.filter(user=request.user)[:10]
         serializer = getContactSerializer(queryset,many=True)
         return Response(serializer.data)
 
     def create(self,request):
         data = request.data
         user = request.user
+        obj = Contact.objects.filter(ref=data['ref'])
+        if obj != []:
+            return Response(status=409)
         obj = Contact.objects.create(
             user = user,
             first_name = data['first_name'],
@@ -39,7 +62,6 @@ class getContactViewset(viewsets.ViewSet):
     def update(self,request,pk):
         data = request.data
         obj = Contact.objects.get(id=pk)
-        print(data['first_name'])
         if obj.user == request.user:
             obj.first_name = data['first_name']
             obj.last_name = data['last_name']
@@ -80,6 +102,9 @@ class getContactListViewset(viewsets.ViewSet):
     def create(self,request):
         data = request.data
         user = request.user
+        obj = contactList.objects.filter(ref=data['ref'])
+        if obj != []:
+            return Response(status=409)
         obj = contactList.objects.create(
             user = user,
             name = data['name'],
@@ -110,3 +135,20 @@ class getContactListViewset(viewsets.ViewSet):
     def destroy(self,request,pk):
         contactList.objects.get(id=pk).delete()
         return Response('success')
+
+
+class ContactListTable(generics.ListAPIView):
+    serializer_class = getContactListSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    pagination_classes = LimitOffsetPagination
+    filter_backends = (OrderingFilter, SearchFilter)
+    search_fields = ('name', 'ref', 'description')
+    ordering_fields = ('name')
+
+    def get_queryset(self):
+        """
+        restricts the returned contacts to a given user
+        """
+        queryset = contactList.objects.filter(user=self.request.user)
+        return queryset

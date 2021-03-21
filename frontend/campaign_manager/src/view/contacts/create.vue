@@ -151,6 +151,9 @@ import KTUtil from "@/assets/js/components/util";
 import store from "@/core/services/store/store.js";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+Vue.use(VueCookies)
 
 export default {
   name: "ContactsCreateForm",
@@ -220,6 +223,8 @@ export default {
         };
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
       axios.defaults.headers.post["Content-Type"] = "application/json";
+      axios.defaults.headers.common["Authorization"] =
+        "Token " + Vue.$cookies.get("key");
       axios
         .post("api/contact/manage/", data)
         .then(function (response) {

@@ -278,8 +278,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import store from "@/core/services/store/store.js";
 import router from "@/router.js";
-import Vue from 'vue'
-import VueCookies from 'vue-cookies'
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
 Vue.use(VueCookies)
 
 if(Vue.$cookies.get("remember_key")){
@@ -433,7 +433,7 @@ export default {
           Vue.$cookies.set("key",response["data"]["key"], -1);
           Vue.$cookies.set("remember_key",true, -1);
           axios.defaults.headers.common["Authorization"] =
-            "Token " + response["data"]["key"];
+            "Token " + Vue.$cookies.get("key");
           axios
             .get("/api/user/account/get_info/")
             .then(function (response) {

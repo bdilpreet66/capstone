@@ -7,11 +7,15 @@ from rest_framework.response import Response
 
 from .models import Template
 from .serializers import getTemplateSerializer
+from rest_framework import generics
+
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 # Create your views here.
 
 class getTemplateView(viewsets.ViewSet):
-    # authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def list(self,request):
@@ -58,3 +62,20 @@ class getTemplateMessageView(viewsets.ViewSet):
         with open(obj.message,'r') as f:
             data = {'message': f.read()}
         return Response(data)
+
+
+class TemplateTable(generics.ListAPIView):
+    serializer_class = getTemplateSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    pagination_classes = LimitOffsetPagination
+    filter_backends = (OrderingFilter, SearchFilter)
+    search_fields = ('name', 'subject')
+    ordering_fields = ('name')
+
+    def get_queryset(self):
+        """
+        restricts the returned contacts to a given user
+        """
+        queryset = Template.objects.filter(user=self.request.user)
+        return queryset

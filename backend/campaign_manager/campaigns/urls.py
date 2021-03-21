@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import getTemplateView, getTemplateMessageView
+from .views import getTemplateView, getTemplateMessageView, TemplateTable
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 
@@ -10,6 +10,7 @@ router.register(r'template/get/message',getTemplateMessageView,basename='getTemp
 app_name = 'campaigns'
 
 urlpatterns = [
+    path('listTemplates',TemplateTable.as_view(), name="TemplateTable"),
 ]
 
 urlpatterns += router.urls

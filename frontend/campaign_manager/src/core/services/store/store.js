@@ -17,6 +17,9 @@ export default new Vuex.Store({
         cam_available: false,
         contacts: [],
         selectedContact: null,
+        ContatCount: "",
+        ContatNext: "",
+        ContatPrev: "",
         contactsPageControls: {
             table: true,
             create: false,
@@ -34,7 +37,10 @@ export default new Vuex.Store({
             state.profile.email = payload['email'];
         },
         updateContact: (state, payload) => {
-            state.contacts = payload;
+            state.contacts = payload["results"];
+            state.ContatCount = payload["count"];
+            state.ContatNext = payload["next"];
+            state.ContatPrev = payload["previous"];
         },
     },
     actions: {
