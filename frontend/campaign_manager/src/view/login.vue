@@ -437,10 +437,15 @@ export default {
           axios
             .get("/api/user/account/get_info/")
             .then(function (response) {
-              console.log(response);
-              store.dispatch("executeUpdateProfile", response["data"]);
+              Vue.$cookies.set("logo","http://127.0.0.1:8000"+response["data"]["logo"], -1);
+              Vue.$cookies.set("company_site",response["data"]["company_site"], -1);
+              Vue.$cookies.set("contact_number",response["data"]["contact_number"], -1);
+              Vue.$cookies.set("company_name",response["data"]["company_name"], -1);
+              Vue.$cookies.set("username",response["data"]["user"]["username"], -1);
+              Vue.$cookies.set("email",response["data"]["user"]["email"], -1);
+              Vue.$cookies.set("first_name",response["data"]["user"]["first_name"], -1);
+              Vue.$cookies.set("last_name",response["data"]["user"]["last_name"], -1);
               router.replace({ name: "Dashboard" });
-              // this.$router.push({ name: "Dashboard" })
             })
             .catch(function (error) {
               if (error.response) {

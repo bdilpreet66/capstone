@@ -24,6 +24,11 @@ export default new Vuex.Store({
             table: true,
             create: false,
             update: false
+        },
+        integration: {
+            view: 0,
+            active: [],
+            gmail_link: ""
         }
     },
     mutations: {
@@ -42,6 +47,9 @@ export default new Vuex.Store({
             state.ContatNext = payload["next"];
             state.ContatPrev = payload["previous"];
         },
+        updategmail_link: (state, payload) => {
+            state.integration.gmail_link = payload;
+        },
     },
     actions: {
         executeUpdateToken: (context, payload) => {
@@ -52,6 +60,9 @@ export default new Vuex.Store({
         },
         executeUpdateContact: (context, payload) => {
             context.commit("updateContact", payload)
+        },
+        executeUpdategmail_link: (context, payload) => {
+            context.commit("updategmail_link", payload)
         },
     },
     modules: {}

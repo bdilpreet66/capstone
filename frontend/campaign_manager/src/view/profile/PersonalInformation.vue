@@ -13,27 +13,24 @@
       </div>
       <div class="card-toolbar">
         <button
-          type="reset"
+          type="submit"
           class="btn btn-success mr-2"
-          @click="save()"
           ref="kt_save_changes"
+          @click="save"
         >
           Save Changes
-        </button>
-        <button type="reset" class="btn btn-secondary" @click="cancel()">
-          Cancel
         </button>
       </div>
     </div>
     <!--end::Header-->
     <!--begin::Form-->
-    <form class="form">
+    <form class="form" id="profileinfoForm">
       <!--begin::Body-->
       <div class="card-body">
         <div class="row">
           <label class="col-xl-3"></label>
           <div class="col-lg-9 col-xl-6">
-            <h5 class="font-weight-bold mb-6">Customer Info</h5>
+            <h5 class="font-weight-bold mb-6">User Info</h5>
           </div>
         </div>
         <div class="form-group row">
@@ -62,23 +59,6 @@
                 />
                 <input type="hidden" name="profile_avatar_remove" />
               </label>
-              <span
-                class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                data-action="cancel"
-                data-toggle="tooltip"
-                title="Cancel avatar"
-              >
-                <i class="ki ki-bold-close icon-xs text-muted"></i>
-              </span>
-              <span
-                class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                data-action="remove"
-                data-toggle="tooltip"
-                title="Remove avatar"
-                @click="current_photo = null"
-              >
-                <i class="ki ki-bold-close icon-xs text-muted"></i>
-              </span>
             </div>
             <span class="form-text text-muted"
               >Allowed file types: png, jpg, jpeg.</span
@@ -94,7 +74,8 @@
               ref="name"
               class="form-control form-control-lg form-control-solid"
               type="text"
-              v-bind:value="currentUserPersonalInfo.name"
+              name="fname"
+              v-model="fname"
             />
           </div>
         </div>
@@ -107,7 +88,8 @@
               ref="surname"
               class="form-control form-control-lg form-control-solid"
               type="text"
-              v-bind:value="currentUserPersonalInfo.surname"
+              name="lname"
+              v-model="lname"
             />
           </div>
         </div>
@@ -120,12 +102,9 @@
               ref="company_name"
               class="form-control form-control-lg form-control-solid"
               type="text"
-              v-bind:value="currentUserPersonalInfo.company_name"
+              name="company"
+              v-model="cname"
             />
-            <span class="form-text text-muted"
-              >If you want your invoices addressed to a company. Leave blank to
-              use your full name.</span
-            >
           </div>
         </div>
         <div class="row">
@@ -148,9 +127,10 @@
               <input
                 ref="phone"
                 type="text"
+                name="mob"
                 class="form-control form-control-lg form-control-solid"
                 placeholder="Phone"
-                v-bind:value="currentUserPersonalInfo.phone"
+                v-model="mob"
               />
             </div>
             <span class="form-text text-muted"
@@ -170,11 +150,11 @@
                 </span>
               </div>
               <input
-                ref="email"
                 type="text"
+                name="email"
                 class="form-control form-control-lg form-control-solid"
                 placeholder="Email"
-                v-bind:value="currentUserPersonalInfo.email"
+                v-model="email"
               />
             </div>
           </div>
@@ -188,13 +168,11 @@
               <input
                 ref="company_site"
                 type="text"
+                name="website"
                 class="form-control form-control-lg form-control-solid"
                 placeholder="Username"
-                v-bind:value="currentUserPersonalInfo.company_site"
+                v-model="website"
               />
-              <div class="input-group-append">
-                <span class="input-group-text">.com</span>
-              </div>
             </div>
           </div>
         </div>
@@ -207,64 +185,160 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { UPDATE_PERSONAL_INFO } from "@/core/services/store/profile.module";
+import KTUtil from "@/assets/js/components/util";
+import Swal from "sweetalert2";
+import formValidation from "@/assets/plugins/formvalidation/dist/es6/core/Core";
+
+// FormValidation plugins
+import Trigger from "@/assets/plugins/formvalidation/dist/es6/plugins/Trigger";
+import Bootstrap from "@/assets/plugins/formvalidation/dist/es6/plugins/Bootstrap";
+import SubmitButton from "@/assets/plugins/formvalidation/dist/es6/plugins/SubmitButton";
+import router from "@/router.js";
+import axios from "axios";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+// import store from "@/core/services/store/store.js";
+Vue.use(VueCookies)
 
 export default {
   name: "PersonalInformation",
   data() {
     return {
-      default_photo: "media/users/blank.png",
-      current_photo: null
+      default_photo: Vue.$cookies.get("logo"),
+      current_photo: null,
+      website: Vue.$cookies.get("company_site"),
+      mob: Vue.$cookies.get("contact_number"),
+      cname: Vue.$cookies.get("company_name"),
+      email: Vue.$cookies.get("email"),
+      fname: Vue.$cookies.get("first_name"),
+      lname: Vue.$cookies.get("last_name"),
     };
   },
   mounted() {
-    this.current_photo = this.currentUserPersonalInfo.photo;
+    const password_change_form = KTUtil.getById("profileinfoForm");
+
+    this.fv = formValidation(password_change_form, {
+      fields: {
+        email: {
+          validators: {
+            notEmpty: {
+              message: "Current password is required"
+            },
+            emailAddress: {
+                message: 'The value is not a valid email address'
+            },
+          }
+        },
+        website: {
+          validators: {
+            uri: {
+                allowEmptyProtocol: true,
+                message: 'The website address is not valid'
+            }
+          }
+        },
+      },
+      plugins: {
+        trigger: new Trigger(),
+        bootstrap: new Bootstrap(),
+        submitButton: new SubmitButton()
+      }
+    });
+      this.fv.on("core.form.valid", () => {
+        var data = {
+          'fname': this.fname,
+          'website': this.website,
+          'mob': this.mob,
+          'email': this.email,
+          'cname': this.cname,
+          'lname': this.lname,
+        }
+        axios.defaults.baseURL = "http://127.0.0.1:8000/";
+      axios.defaults.headers.post["Content-Type"] = "application/json";
+          axios.defaults.headers.common["Authorization"] =
+            "Token " + Vue.$cookies.get("key");
+      axios
+        .post("api/user/update/profile/", data)
+        .then(function (response) {
+            Vue.$cookies.set("company_site",response["data"]["website"], -1);
+            Vue.$cookies.set("contact_number",response["data"]["mob"], -1);
+            Vue.$cookies.set("company_name",response["data"]["cname"], -1);
+            Vue.$cookies.set("email",response["data"]["email"], -1);
+            Vue.$cookies.set("first_name",response["data"]["fname"], -1);
+            Vue.$cookies.set("last_name",response["data"]["lname"], -1);
+            Swal.fire({
+              title: "Success",
+              text: "Profile Updated Successfully.",
+              icon: "success",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            }).then(()=>{
+              router.go();
+            });
+        })
+        .catch(function (error) {
+          if (error.response) {
+            Swal.fire({
+              title: "Error",
+              text: "Failed to update profile!",
+              icon: "error",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            });
+          }
+        });
+      });
+
+      this.fv.on("core.form.invalid", () => {
+        Swal.fire({
+          title: "Error",
+          text: "Please, provide correct data!",
+          icon: "error",
+          confirmButtonClass: "btn btn-secondary"
+        });
+      });
   },
   methods: {
     save() {
-      var name = this.$refs.name.value;
-      var surname = this.$refs.surname.value;
-      var company_name = this.$refs.company_name.value;
-      var phone = this.$refs.phone.value;
-      var email = this.$refs.email.value;
-      var company_site = this.$refs.company_site.value;
-      var photo = this.photo;
-
-      // set spinner to submit button
-      const submitButton = this.$refs["kt_save_changes"];
-      submitButton.classList.add("spinner", "spinner-light", "spinner-right");
-
-      // dummy delay
-      setTimeout(() => {
-        // send update request
-        this.$store.dispatch(UPDATE_PERSONAL_INFO, {
-          name,
-          surname,
-          company_name,
-          phone,
-          email,
-          company_site,
-          photo
-        });
-
-        submitButton.classList.remove(
-          "spinner",
-          "spinner-light",
-          "spinner-right"
-        );
-      }, 2000);
-    },
-    cancel() {
-      this.$refs.name.value = this.currentUserPersonalInfo.name;
-      this.$refs.surname.value = this.currentUserPersonalInfo.surname;
-      this.$refs.company_name.value = this.currentUserPersonalInfo.company_name;
-      this.$refs.phone.value = this.currentUserPersonalInfo.phone;
-      this.$refs.email.value = this.currentUserPersonalInfo.email;
-      this.$refs.company_site.value = this.currentUserPersonalInfo.company_site;
-      this.current_photo = this.currentUserPersonalInfo.photo;
+      this.fv.validate();
     },
     onFileChange(e) {
       const file = e.target.files[0];
+      let data = new FormData();
+      data.append('file', file, file.fileName);
+      axios.defaults.baseURL = "http://127.0.0.1:8000/";
+      axios.defaults.headers.post["Content-Type"] = "application/json";
+          axios.defaults.headers.common["Authorization"] =
+            "Token " + Vue.$cookies.get("key");
+      axios
+        .post("api/user/update/ppic/", data,{headers: {
+              'accept': 'application/json',
+              'Accept-Language': 'en-US,en;q=0.8',
+              'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+        }})
+        .then(function (response) {
+            Vue.$cookies.set("logo","http://127.0.0.1:8000/media/" + response['data']['data'],-1)
+            Swal.fire({
+              title: "Success",
+              text: "Uploaded Imaage to server.",
+              icon: "success",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            }).then(()=>{
+              router.go();
+            });
+        })
+        .catch(function (error) {
+          if (error.response) {
+            Swal.fire({
+              title: "Error",
+              text: "Failed to upload Imaage to server!",
+              icon: "error",
+              confirmButtonClass: "btn btn-secondary",
+              heightAuto: false,
+            });
+          }
+        });
 
       if (typeof FileReader === "function") {
         const reader = new FileReader();

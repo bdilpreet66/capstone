@@ -12,6 +12,11 @@ var router = new Router({
         component: () =>
             import ("@/view/login.vue")
     }, {
+        path: "/profile",
+        name: 'Profile',
+        component: () =>
+            import ("@/view/profile.vue")
+    }, {
         path: "/dashboard",
         name: 'Dashboard',
         component: () =>

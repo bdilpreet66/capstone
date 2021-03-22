@@ -20,7 +20,6 @@
       >
         <h3 class="font-weight-bold m-0">
           User Profile
-          <small class="text-muted font-size-sm ml-2">12 messages</small>
         </h3>
         <a
           href="#"
@@ -41,16 +40,15 @@
         <div class="d-flex align-items-center mt-5">
           <div class="symbol symbol-100 mr-5">
             <img class="symbol-label" :src="picture" alt="" />
-            <i class="symbol-badge bg-success"></i>
           </div>
           <div class="d-flex flex-column">
             <a
               href="#"
               class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
             >
-              James Jones
+              {{ username }}
             </a>
-            <div class="text-muted mt-1">Application Developer</div>
+            <div class="text-muted mt-1">{{ name }}</div>
             <div class="navi mt-2">
               <a href="#" class="navi-item">
                 <span class="navi-link p-0 pb-2">
@@ -63,9 +61,9 @@
                       <!--end::Svg Icon-->
                     </span>
                   </span>
-                  <span class="navi-text text-muted text-hover-primary">
-                    jm@softplus.com
-                  </span>
+                  <a :href="'mailto:'+email" class="navi-text text-muted text-hover-primary">
+                    {{ email }}
+                  </a>
                 </span>
               </a>
             </div>
@@ -80,7 +78,7 @@
         <div class="navi navi-spacer-x-0 p-0">
           <!--begin::Item-->
           <router-link
-            to="/builder"
+            to="/profile"
             @click.native="closeOffcanvas"
             href="#"
             class="navi-item"
@@ -101,11 +99,6 @@
                 <div class="font-weight-bold">My Profile</div>
                 <div class="text-muted">
                   Account settings and more
-                  <span
-                    class="label label-light-danger label-inline font-weight-bold"
-                  >
-                    update
-                  </span>
                 </div>
               </div>
             </div>
@@ -113,7 +106,7 @@
           <!--end:Item-->
           <!--begin::Item-->
           <router-link
-            to="/builder"
+            to="/dashboard"
             @click.native="closeOffcanvas"
             href="#"
             class="navi-item"
@@ -129,58 +122,8 @@
                 </div>
               </div>
               <div class="navi-text">
-                <div class="font-weight-bold">My Messages</div>
-                <div class="text-muted">Inbox and tasks</div>
-              </div>
-            </div>
-          </router-link>
-          <!--end:Item-->
-          <!--begin::Item-->
-          <router-link
-            to="/builder"
-            @click.native="closeOffcanvas"
-            href="#"
-            class="navi-item"
-          >
-            <div class="navi-link">
-              <div class="symbol symbol-40 bg-light mr-3">
-                <div class="symbol-label">
-                  <span class="svg-icon svg-icon-md svg-icon-danger">
-                    <!--begin::Svg Icon-->
-                    <inline-svg src="media/svg/icons/Files/Selected-file.svg" />
-                    <!--end::Svg Icon-->
-                  </span>
-                </div>
-              </div>
-              <div class="navi-text">
-                <div class="font-weight-bold">My Activities</div>
-                <div class="text-muted">Logs and notifications</div>
-              </div>
-            </div>
-          </router-link>
-          <!--end:Item-->
-          <!--begin::Item-->
-          <router-link
-            to="/builder"
-            @click.native="closeOffcanvas"
-            href="#"
-            class="navi-item"
-          >
-            <div class="navi-link">
-              <div class="symbol symbol-40 bg-light mr-3">
-                <div class="symbol-label">
-                  <span class="svg-icon svg-icon-md svg-icon-primary">
-                    <!--begin::Svg Icon-->
-                    <inline-svg
-                      src="media/svg/icons/Communication/Mail-opened.svg"
-                    />
-                    <!--end::Svg Icon-->
-                  </span>
-                </div>
-              </div>
-              <div class="navi-text">
-                <div class="font-weight-bold">My Tasks</div>
-                <div class="text-muted">latest tasks and projects</div>
+                <div class="font-weight-bold">Dashboard</div>
+                <div class="text-muted">Overview of your schedules</div>
               </div>
             </div>
           </router-link>
@@ -191,7 +134,7 @@
         <!--begin::Notifications-->
         <div>
           <!--begin:Heading-->
-          <h5 class="mb-5">Recent Notifications</h5>
+          <h5 class="mb-5">Recent Schedules</h5>
           <!--end:Heading-->
           <template v-for="(item, i) in list">
             <!--begin::Item -->
@@ -245,44 +188,18 @@
 </style>
 
 <script>
-import { LOGOUT } from "@/core/services/store/auth.module";
 import KTLayoutQuickUser from "@/assets/js/layout/extended/quick-user.js";
 import KTOffcanvas from "@/assets/js/components/offcanvas.js";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+Vue.use(VueCookies)
+import router from "@/router.js";
 
 export default {
   name: "KTQuickUser",
   data() {
     return {
-      list: [
-        {
-          title: "Another purpose persuade",
-          desc: "Due in 2 Days",
-          alt: "+28%",
-          svg: "media/svg/icons/Home/Library.svg",
-          type: "warning"
-        },
-        {
-          title: "Would be to people",
-          desc: "Due in 2 Days",
-          alt: "+50%",
-          svg: "media/svg/icons/Communication/Write.svg",
-          type: "success"
-        },
-        {
-          title: "Purpose would be to persuade",
-          desc: "Due in 2 Days",
-          alt: "-27%",
-          svg: "media/svg/icons/Communication/Group-chat.svg",
-          type: "danger"
-        },
-        {
-          title: "The best product",
-          desc: "Due in 2 Days",
-          alt: "+8%",
-          svg: "media/svg/icons/General/Attachment2.svg",
-          type: "info"
-        }
-      ]
+      list: []
     };
   },
   mounted() {
@@ -291,9 +208,17 @@ export default {
   },
   methods: {
     onLogout() {
-      this.$store
-        .dispatch(LOGOUT)
-        .then(() => this.$router.push({ name: "login" }));
+      Vue.$cookies.remove("key");
+      Vue.$cookies.remove("remember_key");
+      Vue.$cookies.remove("logo");
+      Vue.$cookies.remove("company_site");
+      Vue.$cookies.remove("contact_number");
+      Vue.$cookies.remove("company_name");
+      Vue.$cookies.remove("username");
+      Vue.$cookies.remove("email");
+      Vue.$cookies.remove("first_name");
+      Vue.$cookies.remove("last_name");
+      router.replace({ name: "login" });
     },
     closeOffcanvas() {
       new KTOffcanvas(KTLayoutQuickUser.getElement()).hide();
@@ -301,7 +226,16 @@ export default {
   },
   computed: {
     picture() {
-      return process.env.BASE_URL + "media/users/300_21.jpg";
+      return Vue.$cookies.get("logo");
+    },
+    username() {
+      return Vue.$cookies.get("username");
+    }, 
+    email() {
+      return Vue.$cookies.get("email");
+    },    
+    name() {
+      return Vue.$cookies.get("first_name") + " " + Vue.$cookies.get("last_name");
     }
   }
 };

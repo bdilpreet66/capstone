@@ -20,7 +20,7 @@
         <h3 class="font-weight-bold m-0">
           Quick Actions
           <small class="text-muted font-size-sm ml-2"
-            >finance &amp; reports</small
+            >Schedules &amp; Contacts</small
           >
         </h3>
         <a

@@ -17,6 +17,8 @@ from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from django.urls import path, include
 import user_information, contacts, campaigns
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,3 +26,6 @@ urlpatterns = [
     path('api/contact/', include('contacts.urls',namespace='contacts')),
     path('api/campaign/', include('campaigns.urls',namespace='campaign')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

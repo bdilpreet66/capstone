@@ -43,8 +43,6 @@ class getContactViewset(viewsets.ViewSet):
         data = request.data
         user = request.user
         obj = Contact.objects.filter(ref=data['ref'])
-        if obj != []:
-            return Response(status=409)
         obj = Contact.objects.create(
             user = user,
             first_name = data['first_name'],
@@ -103,8 +101,6 @@ class getContactListViewset(viewsets.ViewSet):
         data = request.data
         user = request.user
         obj = contactList.objects.filter(ref=data['ref'])
-        if obj != []:
-            return Response(status=409)
         obj = contactList.objects.create(
             user = user,
             name = data['name'],

@@ -118,7 +118,7 @@
           <div class="row">
             <div col="12">
               <div
-                class="dataTables_paginate paging_simple_numbers"
+                class="d-flex justify-content-end"
               >
                 <ul class="pagination">
                   <li
