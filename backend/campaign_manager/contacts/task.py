@@ -9,7 +9,7 @@ def save_list_toDb(cfile,list_id,emailfield,first_name,last_name,ref,desc,add,ba
     obj = contactList.objects.get(id=list_id)
     length = len(df[emailfield])
     for i in range(length):
-        objs = Contact.objects.filter(email=df.iloc[i][emailfield])
+        objs = Contact.objects.filter(email=df.iloc[i][emailfield]).filter(user=obj.user)
         if len(objs) == 0:
             cobj = Contact.objects.create(user = obj.user,email = df.iloc[i][emailfield])
             try: 
