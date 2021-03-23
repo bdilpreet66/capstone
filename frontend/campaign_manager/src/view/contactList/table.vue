@@ -7,9 +7,9 @@
         <div class="card-header flex-wrap py-5">
           <div class="card-title">
             <h3 class="card-label">
-              Contacts
+              Contact List
               <div class="text-muted pt-2 font-size-sm">
-                Add or Remove contacts
+                Add or Remove contact lists
               </div>
             </h3>
           </div>
@@ -19,7 +19,7 @@
               href="javascript:;"
               @click="createForm()"
               class="btn btn-primary font-weight-bolder"
-              >New Contact</a
+              >New Contact List</a
             >
             <!--end::Button-->
           </div>
@@ -78,30 +78,25 @@
           >
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>Email</th>
+                <th>LIST NAME</th>
                 <th>Refrence</th>
                 <th>DESCRIPTION</th>
-                <th>Phone no.</th>
-                <th>Address</th>
-                <th>Actions</th>
+                <th class="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in data" :key="item.id">
-                <td>{{ item.first_name + " " + item.last_name }}</td>
-                <td>{{ item.email }}</td>
+                <td>{{ item.name }}</td>
                 <td>{{ item.ref }}</td>
-                <td>{{ item.desc.substring(0, 25) + "..." }}</td>
-                <td>{{ item.mobile }}</td>
-                <td>{{ item.address.substring(0, 15) + "..." }}</td>
-                <td>
+                <td>{{ item.description }}</td>
+                <td class="text-right">
                   <a
                     href="javascript:;"
                     class="btn btn-sm btn-clean btn-icon"
-                    title="Edit details"
-                    @click="updateContact(item)"
-                    ><i class="la la-edit"></i
+                    @click="ViewList(item.id,item.description,item.name)"
+                    title="View List Content"
+                  >
+                    <i class="la la-eye"></i
                   ></a>
                   <a
                     href="javascript:;"
@@ -115,7 +110,8 @@
               </tr>
             </tbody>
           </table>
-          <div class="row d-flex justify-content-end align-right"><ul class="pagination">
+          <div class="row d-flex justify-content-end align-right">
+                <ul class="pagination">
                   <li
                     class="paginate_button page-item previous"
                   >
@@ -163,6 +159,7 @@
                       >Last</a>
                   </li>
                 </ul>
+            
           </div>
           <!--end: Datatable-->
         </div>
@@ -182,7 +179,7 @@ import VueCookies from 'vue-cookies';
 Vue.use(VueCookies)
 
 export default {
-  name: "ContactsTable",
+  name: "ContactsListTable",
   data: () => {
     return {
       per_page: 10,
@@ -196,9 +193,9 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Token " + Vue.$cookies.get("key");
     axios
-      .get("api/contact/listContacts?limit=10&offset=0")
+      .get("api/contact/list/listTable?limit=10&offset=0")
       .then(function (response) {
-        store.dispatch("executeUpdateContact", response["data"]);
+        store.dispatch("executeUpdateListContact", response["data"]);
       })
       .catch(function (error) {
         if (error.response) {
@@ -214,23 +211,25 @@ export default {
   },
   methods: {
     createForm() {
-      store.state.contactsPageControls.table = false;
-      store.state.contactsPageControls.create = true;
+      store.state.contactListPageControls.table = false;
+      store.state.contactListPageControls.create = true;
     },
-    updateContact(x) {
-      store.state.selectedContact = x;
-      store.state.contactsPageControls.table = false;
-      store.state.contactsPageControls.update = true;
+    ViewList(id,desc,title) {
+      store.state.viewListID = id;
+      store.state.viewListdesc = desc;
+      store.state.viewListTitle = title;
+      store.state.contactListPageControls.table = false;
+      store.state.contactListPageControls.view = true;
     },
     deleteContact(id) {
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
       axios.defaults.headers.post["Content-Type"] = "application/json";
       axios
-        .delete("api/contact/manage/" + id + "/")
+        .delete("api/contact/list/" + id + "/")
         .then(function () {
-          for(var i=0; i< store.state.contacts.length; i++){
-            if(store.state.contacts[i]['id'] == id){
-              store.state.contacts.splice(i,1)
+          for(var i=0; i< store.state.contactsList.length; i++){
+            if(store.state.contactsList[i]['id'] == id){
+              store.state.contactsList.splice(i,1)
             }
           }
         })
@@ -253,13 +252,13 @@ export default {
         "Token " + Vue.$cookies.get("key");
       axios
         .get(
-          "api/contact/listContacts?limit=" +
+          "api/contact/list/listTable?limit=" +
             this.per_page +
             "&offset=0&search=" +
             e.target.value
         )
         .then(function (response) {
-          store.dispatch("executeUpdateContact", response["data"]);
+          store.dispatch("executeUpdateListContact", response["data"]);
         })
         .catch(function (error) {
           if (error.response) {
@@ -276,7 +275,7 @@ export default {
     getPage(type){
       var link = ""
       if(type=="first"){
-        link = "api/contact/listContacts?limit=" +this.per_page + "&offset=0";
+        link = "api/contact/list/listTable?limit=" +this.per_page + "&offset=0";
       } else if (type=="next"){
         if (store.state.ContatNext == null)  return;
         link = store.state.ContatNext;
@@ -286,7 +285,7 @@ export default {
         link = store.state.ContatPrev;
         link = link.replace("http://127.0.0.1:8000/","")
       } else{
-        link = "api/contact/listContacts?limit=" +this.per_page + "&offset=" + parseInt(store.state.ContatCount-this.per_page-1);
+        link = "api/contact/list/listTable?limit=" +this.per_page + "&offset=" + parseInt(store.state.ContatCount-this.per_page-1);
       }
       if(this.searchField != ""){
         link = link + "&search=" + this.searchField;
@@ -298,7 +297,7 @@ export default {
       axios
         .get(link)
         .then(function (response) {
-          store.dispatch("executeUpdateContact", response["data"]);
+          store.dispatch("executeUpdateListContact", response["data"]);
         })
         .catch(function (error) {
           if (error.response) {
@@ -313,20 +312,21 @@ export default {
         });
     },
     setPageSize(e) {
+      console.log();
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
     axios.defaults.headers.post["Content-Type"] = "application/json";
     axios.defaults.headers.common["Authorization"] =
       "Token " + Vue.$cookies.get("key");
     axios
-      .get("api/contact/listContacts?limit="+e.target.value+"&offset=0&search=" + this.searchField)
+      .get("api/contact/list/listTable?limit="+e.target.value+"&offset=0&search=" + this.searchField)
       .then(function (response) {
-        store.dispatch("executeUpdateContact", response["data"]);
+        store.dispatch("executeUpdateListContact", response["data"]);
       })
       .catch(function (error) {
         if (error.response) {
           Swal.fire({
             title: "Error",
-            text: "Unable to get contacts",
+            text: "Unable to get contacts list",
             icon: "error",
             confirmButtonClass: "btn btn-secondary",
             heightAuto: false,
@@ -337,7 +337,7 @@ export default {
   },
   computed: {
     data() {
-      return store.state.contacts;
+      return store.state.contactsList;
     },
   },
 };

@@ -43,6 +43,25 @@
         </a>
       </li>
     </router-link>
+    <router-link
+      to="/contactslist"
+      v-slot="{ href, navigate, isActive, isExactActive }"
+    >
+      <li
+        aria-haspopup="true"
+        data-menu-toggle="hover"
+        class="menu-item"
+        :class="[
+          isActive && 'menu-item-active',
+          isExactActive && 'menu-item-active'
+        ]"
+      >
+        <a :href="href" class="menu-link" @click="navigate">
+          <i class="menu-icon flaticon2-list"></i>
+          <span class="menu-text">Contacts List</span>
+        </a>
+      </li>
+    </router-link>
 
     <li class="menu-section">
       <h4 class="menu-text">Settings</h4>
@@ -62,7 +81,7 @@
         ]"
       >
         <a :href="href" class="menu-link" @click="navigate">
-          <i class="menu-icon flaticon2-user"></i>
+          <i class="menu-icon flaticon2-settings"></i>
           <span class="menu-text">Profile</span>
         </a>
       </li>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,6 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'cddl9=3h@fag_8)_vr+krbwwx1vr_$pw1c(p58m3h=u@9+v_#@'
+
+
+CELERY_BROKER_URL = os.environ.get('amqp://localhost')
+# CELERY_RESULT_BACKEND = 'django-db'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

@@ -12,7 +12,7 @@ class getContactSerializer(serializers.ModelSerializer):
 class getContactInfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
-        fields = ('id','first_name','last_name','ref','desc')
+        fields = ('id','first_name','last_name','ref','desc','email')
 
 class getContactListSerializer(serializers.ModelSerializer):
     contact = getContactInfoSerializer(read_only=True,many=True)

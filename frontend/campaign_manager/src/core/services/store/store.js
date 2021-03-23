@@ -20,10 +20,22 @@ export default new Vuex.Store({
         ContatCount: "",
         ContatNext: "",
         ContatPrev: "",
+        contactsList: [],
+        viewListID: 0,
+        viewListTitle: "",
+        viewListdesc: "",
+        ContatListCount: "",
+        ContatListNext: "",
+        ContatListPrev: "",
         contactsPageControls: {
             table: true,
             create: false,
             update: false
+        },
+        contactListPageControls: {
+            table: true,
+            create: false,
+            view: false
         },
         integration: {
             view: 0,
@@ -47,6 +59,12 @@ export default new Vuex.Store({
             state.ContatNext = payload["next"];
             state.ContatPrev = payload["previous"];
         },
+        updateContactList: (state, payload) => {
+            state.contactsList = payload["results"];
+            state.ContatListCount = payload["count"];
+            state.ContatListNext = payload["next"];
+            state.ContatListPrev = payload["previous"];
+        },
         updategmail_link: (state, payload) => {
             state.integration.gmail_link = payload;
         },
@@ -60,6 +78,9 @@ export default new Vuex.Store({
         },
         executeUpdateContact: (context, payload) => {
             context.commit("updateContact", payload)
+        },
+        executeUpdateListContact: (context, payload) => {
+            context.commit("updateContactList", payload)
         },
         executeUpdategmail_link: (context, payload) => {
             context.commit("updategmail_link", payload)

@@ -26,6 +26,11 @@ var router = new Router({
         name: 'Contacts',
         component: () =>
             import ("@/view/contacts.vue")
+    }, {
+        path: "/contactslist",
+        name: 'ContactList',
+        component: () =>
+            import ("@/view/contactList.vue")
     }, ]
 });
 
