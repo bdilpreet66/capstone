@@ -23,3 +23,43 @@ class Gmail(models.Model):
     emails_per_day = models.IntegerField(default=400)
     daily_limit_left = models.IntegerField(default=400)
     active = models.BooleanField(default=False)
+
+
+
+
+class Outlook(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
+    email = models.EmailField(null=False, blank=False)
+    username = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_password = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_host = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_type = models.CharField(max_length=255,default="Enable SSL")
+    IMAP_port = models.IntegerField(blank=True,null=True)
+    smtp_host = models.CharField(max_length=255,blank=True,null=True)
+    smtp_port = models.IntegerField(blank=True,null=True)
+    smtp_password = models.CharField(max_length=255,blank=True,null=True)
+    smtp_type = models.CharField(max_length=255,default="STARTTLS")
+    emails_per_day = models.IntegerField(default=500)
+    daily_limit_left = models.IntegerField(default=-1)
+    active = models.BooleanField(default=False)
+
+
+class Custom(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
+    smtpemail = models.EmailField(null=False, blank=False)
+    imapemail = models.EmailField(null=True, blank=True)
+    smtpusername = models.CharField(max_length=255,blank=True,null=True)
+    imapusername = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_password = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_host = models.CharField(max_length=255,blank=True,null=True)
+    IMAP_type = models.CharField(max_length=255,default="Enable SSL")
+    IMAP_port = models.IntegerField(blank=True,null=True)
+    smtp_host = models.CharField(max_length=255,blank=True,null=True)
+    smtp_port = models.IntegerField(blank=True,null=True)
+    smtp_password = models.CharField(max_length=255,blank=True,null=True)
+    smtp_type = models.CharField(max_length=255,default="STARTTLS")
+    emails_per_day = models.IntegerField(default=500)
+    daily_limit_left = models.IntegerField(default=-1)
+    active = models.BooleanField(default=False)

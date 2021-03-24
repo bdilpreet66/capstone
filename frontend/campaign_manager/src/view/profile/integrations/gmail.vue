@@ -18,7 +18,7 @@
           Save
         </button>
         <button
-          class="btn btn-success mr-2"
+          class="btn btn-primary mr-2"
           ref="kt_save_changes"
           @click="changeView"
         >

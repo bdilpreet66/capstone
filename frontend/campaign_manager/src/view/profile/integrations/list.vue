@@ -34,7 +34,8 @@
                         <p class="mb-15 d-flex flex-column">
                             <span>Integrate with gmails easy to use mail server api developed by google and used by many all over the world</span>
                         </p>
-                        <a href="javascript:;" @click="changeView(1)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">Integrate</a>
+                        <a href="javascript:;" v-if="!gmail" @click="changeView(1)" class="btn btn-success text-uppercase font-weight-bolder px-15 py-3">Connect</a>
+                        <a href="javascript:;" v-if="gmail" @click="Disconnect(1)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">DisConnect</a>
                         <!--end::Content-->
                     </div>
                 </div>
@@ -60,7 +61,8 @@
                         <p class="mb-15 d-flex flex-column">
                             <span>Integrate with outlooks highly advanced and easily managable SMTP and IMAP Servers to send emails</span>
                         </p>
-                        <a href="javascript:;" @click="changeView(2)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">Integrate</a>
+                        <a href="javascript:;" v-if="!outlook" @click="changeView(2)" class="btn btn-success text-uppercase font-weight-bolder px-15 py-3">Connect</a>
+                        <a href="javascript:;" v-if="outlook" @click="Disconnect(2)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">DisConnect</a>
                         <!--end::Content-->
                     </div>
                 </div>
@@ -86,7 +88,8 @@
                         <p class="mb-15 d-flex flex-column">
                             <span>ALLow you to connect with a wide variety of SMTP and IMAP Servers providing support for millions of Services.</span>
                         </p>
-                        <a href="javascript:;" @click="changeView(3)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">Integrate</a>
+                        <a href="javascript:;" v-if="!custom" @click="changeView(3)" class="btn btn-success text-uppercase font-weight-bolder px-15 py-3">Connect</a>
+                        <a href="javascript:;" v-if="custom" @click="Disconnect(3)" class="btn btn-primary text-uppercase font-weight-bolder px-15 py-3">DisConnect</a>
                         <!--end::Content-->
                     </div>
                 </div>
@@ -99,6 +102,12 @@
 
 <script>
 import store from "@/core/services/store/store.js";
+import axios from "axios";
+import Vue from 'vue';
+import VueCookies from 'vue-cookies';
+import Swal from "sweetalert2";
+import router from "@/router.js";
+Vue.use(VueCookies)
 
 export default {
   name: "List",
@@ -106,10 +115,76 @@ export default {
     return {
     };
   },
+  created() {
+        axios.defaults.baseURL = "http://127.0.0.1:8000/";
+        axios.defaults.headers.post["Content-Type"] = "application/json";
+        axios.defaults.headers.common["Authorization"] =
+            "Token " + Vue.$cookies.get("key");
+        axios
+            .get("api/user/get/active/clients/")
+            .then(function (response) {
+                store.state.outlook = response['data']['outlook'];
+                store.state.gmail = response['data']['gmail'];
+                store.state.custom = response['data']['custom'];
+            })
+            .catch(function (error) {
+            if (error.response) {
+                Swal.fire({
+                title: "Error",
+                text: "Failed to connect to service!",
+                icon: "error",
+                confirmButtonClass: "btn btn-secondary",
+                heightAuto: false,
+                });
+            }
+            });
+  },
   methods: {
       changeView(number){
           store.state.integration.view = number;
+      },
+      Disconnect(number){
+          var link = ""
+          if(number == 1){
+              link = 'api/user/google/disconnect/';
+          } else if(number == 2){
+              link = 'api/user/outlook/disconnect/';
+          } else if(number == 3){
+              link = 'api/user/custom/disconnect/';
+          }
+          
+        axios.defaults.baseURL = "http://127.0.0.1:8000/";
+        axios.defaults.headers.post["Content-Type"] = "application/json";
+        axios.defaults.headers.common["Authorization"] =
+            "Token " + Vue.$cookies.get("key");
+        axios
+            .get(link)
+            .then(function () {
+              router.go();
+            })
+            .catch(function (error) {
+            if (error.response) {
+                Swal.fire({
+                title: "Error",
+                text: "Failed to connect to service!",
+                icon: "error",
+                confirmButtonClass: "btn btn-secondary",
+                heightAuto: false,
+                });
+            }
+            });
       }
-  }
+  },
+  computed: {
+    outlook(){
+        return store.state.outlook;
+    },
+    gmail(){
+        return store.state.gmail;
+    },
+    custom(){
+        return store.state.custom;
+    }
+  },
 };
 </script>

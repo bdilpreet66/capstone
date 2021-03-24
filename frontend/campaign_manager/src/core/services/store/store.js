@@ -53,6 +53,9 @@ export default new Vuex.Store({
             gmail_link: ""
         },
         message: "",
+        outlook: false,
+        gmail: false,
+        custom: false,
     },
     mutations: {
         updateToken: (state, payload) => {
