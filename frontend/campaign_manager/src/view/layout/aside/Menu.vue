@@ -21,6 +21,30 @@
     </router-link>
 
     <li class="menu-section">
+      <h4 class="menu-text">Campaigns</h4>
+      <i class="menu-icon flaticon-more-v2"></i>
+    </li>
+    <router-link
+      to="/templates"
+      v-slot="{ href, navigate, isActive, isExactActive }"
+    >
+      <li
+        aria-haspopup="true"
+        data-menu-toggle="hover"
+        class="menu-item"
+        :class="[
+          isActive && 'menu-item-active',
+          isExactActive && 'menu-item-active'
+        ]"
+      >
+        <a :href="href" class="menu-link" @click="navigate">
+          <i class="menu-icon flaticon-doc"></i>
+          <span class="menu-text">Templates</span>
+        </a>
+      </li>
+    </router-link>
+
+    <li class="menu-section">
       <h4 class="menu-text">Contacts</h4>
       <i class="menu-icon flaticon-more-v2"></i>
     </li>
@@ -38,7 +62,7 @@
         ]"
       >
         <a :href="href" class="menu-link" @click="navigate">
-          <i class="menu-icon flaticon2-user"></i>
+          <i class="menu-icon flaticon2-avatar"></i>
           <span class="menu-text">All Contacts</span>
         </a>
       </li>

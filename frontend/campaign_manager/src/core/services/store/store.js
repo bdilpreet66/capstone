@@ -32,6 +32,16 @@ export default new Vuex.Store({
             create: false,
             update: false
         },
+        selectedTemplates: 0,
+        Templates: [],
+        TemplatesCount: "",
+        TemplatesNext: "",
+        TemplatesPrev: "",
+        TemplatesPageControls: {
+            table: true,
+            create: false,
+            update: false
+        },
         contactListPageControls: {
             table: true,
             create: false,
@@ -41,7 +51,8 @@ export default new Vuex.Store({
             view: 0,
             active: [],
             gmail_link: ""
-        }
+        },
+        message: "",
     },
     mutations: {
         updateToken: (state, payload) => {
@@ -58,6 +69,12 @@ export default new Vuex.Store({
             state.ContatCount = payload["count"];
             state.ContatNext = payload["next"];
             state.ContatPrev = payload["previous"];
+        },
+        updateTemplates: (state, payload) => {
+            state.Templates = payload["results"];
+            state.TemplatesCount = payload["count"];
+            state.TemplatesNext = payload["next"];
+            state.TemplatesPrev = payload["previous"];
         },
         updateContactList: (state, payload) => {
             state.contactsList = payload["results"];
@@ -81,6 +98,9 @@ export default new Vuex.Store({
         },
         executeUpdateListContact: (context, payload) => {
             context.commit("updateContactList", payload)
+        },
+        executeupdateTemplates: (context, payload) => {
+            context.commit("updateTemplates", payload)
         },
         executeUpdategmail_link: (context, payload) => {
             context.commit("updategmail_link", payload)

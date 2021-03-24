@@ -43,6 +43,7 @@ class getTemplateView(viewsets.ViewSet):
         obj = Template.objects.get(id=pk)
         if obj.user == request.user:
             obj.subject = data['subject']
+            obj.name = data['name']
         obj.save()
         with open(obj.message,'w') as f:
             f.write(data['message'])
