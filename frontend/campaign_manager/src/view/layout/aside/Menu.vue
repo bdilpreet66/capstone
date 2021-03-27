@@ -25,6 +25,44 @@
       <i class="menu-icon flaticon-more-v2"></i>
     </li>
     <router-link
+      to="/campaigns"
+      v-slot="{ href, navigate, isActive, isExactActive }"
+    >
+      <li
+        aria-haspopup="true"
+        data-menu-toggle="hover"
+        class="menu-item"
+        :class="[
+          isActive && 'menu-item-active',
+          isExactActive && 'menu-item-active'
+        ]"
+      >
+        <a :href="href" class="menu-link" @click="navigate">
+          <i class="menu-icon flaticon-diagram"></i>
+          <span class="menu-text">Reports</span>
+        </a>
+      </li>
+    </router-link>
+    <router-link
+      to="/campaignCreate"
+      v-slot="{ href, navigate, isActive, isExactActive }"
+    >
+      <li
+        aria-haspopup="true"
+        data-menu-toggle="hover"
+        class="menu-item"
+        :class="[
+          isActive && 'menu-item-active',
+          isExactActive && 'menu-item-active'
+        ]"
+      >
+        <a :href="href" class="menu-link" @click="navigate">
+          <i class="menu-icon flaticon2-pen"></i>
+          <span class="menu-text">Create Campaign</span>
+        </a>
+      </li>
+    </router-link>
+    <router-link
       to="/templates"
       v-slot="{ href, navigate, isActive, isExactActive }"
     >

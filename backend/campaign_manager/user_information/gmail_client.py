@@ -36,103 +36,91 @@ def get_cred_from_token(code):
     email = service.users().getProfile(userId="me").execute()["emailAddress"]
     return creds,email
 
-# def get_saved_cred(id):
-#     obj = Gmail.objects.get(id=id)
-#     file_name = obj.key
-#     creds = None
-#     if os.path.exists(file_name):
-#         with open(file_name, 'rb') as token:
-#             creds = pickle.load(token)
+def get_saved_cred(id):
+    obj = Gmail.objects.get(id=id)
+    file_name = obj.key
+    creds = None
+    if os.path.exists(file_name):
+        with open(file_name, 'rb') as token:
+            creds = pickle.load(token)
             
-#         if not creds or not creds.valid:
-#             if creds and creds.expired and creds.refresh_token:
-#                 creds.refresh(Request())
-#                 return creds
-#             else:
-#                 obj.active = False
-#                 prof_obj = profile.objects.get(user=obj.user)
-#                 prof_obj.active_clients = prof_obj.active_clients -1
-#                 client_list = prof_obj.active_client_names.split("|")
-#                 client_list.remove("Gmail")
-#                 prof_obj.active_client_names = "|".join(client_list)
-#                 prof_obj.save()
-#                 obj.save()
-#         else:
-#             return creds
-#     else:
-#         obj.active = False
-#         prof_obj = profile.objects.get(user=obj.user)
-#         prof_obj.active_clients = prof_obj.active_clients -1
-#         client_list = prof_obj.active_client_names.split("|")
-#         client_list.remove("Gmail")
-#         prof_obj.active_client_names = "|".join(client_list)
-#         prof_obj.save()
-#         obj.save()
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                return creds
+            else:
+                obj.active = False
+                obj.save()
+        else:
+            return creds
+    else:
+        obj.active = False
+        obj.save()
 
 
 
-# def create_message(senderName,sender, to, subject, message_text,reply_to):
-#     """Create a message for an email.
+def create_message(senderName,sender, to, subject, message_text,reply_to):
+    """Create a message for an email.
 
-#     Args:
-#     sender: Email address of the sender.
-#     to: Email address of the receiver.
-#     subject: The subject of the email message.
-#     message_text: The text of the email message.
+    Args:
+    sender: Email address of the sender.
+    to: Email address of the receiver.
+    subject: The subject of the email message.
+    message_text: The text of the email message.
 
-#     Returns:
-#     An object containing a base64url encoded email object.
-#     """
-#     message = MIMEText(message_text,'html')
-#     message['to'] = to
-#     message['from'] = f"{senderName}<{sender}>"
-#     message['subject'] = subject
+    Returns:
+    An object containing a base64url encoded email object.
+    """
+    message = MIMEText(message_text,'html')
+    message['to'] = to
+    message['from'] = f"{senderName}<{sender}>"
+    message['subject'] = subject
     
-#     return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
+    return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
 
 
-# def send_message(service, user_id, message):
-#     """Send an email message.
+def send_message(service, user_id, message):
+    """Send an email message.
 
-#     Args:
-#         service: Authorized Gmail API service instance.
-#         user_id: User's email address. The special value "me"
-#         can be used to indicate the authenticated user.
-#         message: Message to be sent.
+    Args:
+        service: Authorized Gmail API service instance.
+        user_id: User's email address. The special value "me"
+        can be used to indicate the authenticated user.
+        message: Message to be sent.
 
-#     Returns:
-#         Sent Message.
-#     """
-#     try:
-#         message = (service.users().messages().send(userId=user_id, body=message)
-#                 .execute())
-#         return message
-#     except:
-#         return False
+    Returns:
+        Sent Message.
+    """
+    try:
+        message = (service.users().messages().send(userId=user_id, body=message)
+                .execute())
+        return message
+    except:
+        return False
         
 
-# def get_bounced_emails(service,thread_id):
-#     tdata = service.users().threads().get(userId='me', id=thread_id).execute()
+def get_bounced_emails(service,thread_id):
+    tdata = service.users().threads().get(userId='me', id=thread_id).execute()
     
-#     try:
-#         info = tdata['messages'][1]["payload"]["headers"]
-#         for data in info:
-#             if data["name"] == "From" and ("mailer-daemon@googlemail.com" in data["value"] or "mailer-daemon@google.com" in data["value"]):
-#                 email_list_obj = email_list.objects.get(thread_id = thread_id)
-#                 campaign_obj = campaign.objects.get(id = email_list_obj.campaign.id)
-#                 email_list_obj.bounced = True
-#                 email_list_obj.status = True
-#                 campaign_obj.bounced += 1
-#                 campaign_obj.save()
-#                 email_list_obj.save()
-#                 service.users().threads().delete(userId='me', id=thread_id).execute()
-#     except:
-#         email_list_obj = email_list.objects.get(thread_id = thread_id)
-#         campaign_obj = campaign.objects.get(id = email_list_obj.campaign.id)
-#         campaign_obj.delivered += 1
-#         campaign_obj.save()
-#         email_list_obj.status = True
-#         email_list_obj.save()
-#         service.users().threads().delete(userId='me', id=thread_id).execute()
+    try:
+        info = tdata['messages'][1]["payload"]["headers"]
+        for data in info:
+            if data["name"] == "From" and ("mailer-daemon@googlemail.com" in data["value"] or "mailer-daemon@google.com" in data["value"]):
+                email_list_obj = email_list.objects.get(thread_id = thread_id)
+                campaign_obj = campaign.objects.get(id = email_list_obj.campaign.id)
+                email_list_obj.bounced = True
+                email_list_obj.status = True
+                campaign_obj.bounced += 1
+                campaign_obj.save()
+                email_list_obj.save()
+                service.users().threads().delete(userId='me', id=thread_id).execute()
+    except:
+        email_list_obj = email_list.objects.get(thread_id = thread_id)
+        campaign_obj = campaign.objects.get(id = email_list_obj.campaign.id)
+        campaign_obj.delivered += 1
+        campaign_obj.save()
+        email_list_obj.status = True
+        email_list_obj.save()
+        service.users().threads().delete(userId='me', id=thread_id).execute()
 
 

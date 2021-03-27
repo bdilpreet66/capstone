@@ -129,7 +129,7 @@ Vue.use(VueClipboard)
 export default {
   name: "TemplatesCreateForm",
    components: {
-     'editor': Editor // <- Important part
+     'editor': Editor
    },
   data: () => {
     return {

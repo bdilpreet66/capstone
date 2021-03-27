@@ -37,129 +37,169 @@
         <div class="row gutter-b">
           <!--begin::Item-->
           <div class="col-6">
+            <router-link
+              to="/dashboard"
+              v-slot="{ href, navigate }"
+            >
             <a
-              href="#"
+              :href="href"
               class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
             >
               <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
                 <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Euro.svg-->
-                <inline-svg src="media/svg/icons/Shopping/Euro.svg" />
+                <i class="menu-icon flaticon2-architecture-and-city icon-3x text-primary"></i>
                 <!--end::Svg Icon-->
               </span>
               <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Accounting</span
+                >Dashboard</span
               >
             </a>
+            </router-link>
           </div>
           <!--end::Item-->
           <!--begin::Item-->
           <div class="col-6">
+            <router-link
+              to="/campaigns"
+              v-slot="{ href, navigate }"
+            >
             <a
-              href="#"
+              :href="href"
               class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
             >
               <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
                 <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-attachment.svg-->
-                <inline-svg
-                  src="media/svg/icons/Communication/Mail-attachment.svg"
-                />
+                <i class="menu-icon flaticon2-mail icon-3x text-primary"></i>
                 <!--end::Svg Icon-->
               </span>
               <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Members</span
+                >Campaigns</span
               >
             </a>
+            </router-link>
           </div>
           <!--end::Item-->
         </div>
         <div class="row gutter-b">
           <!--begin::Item-->
-          <div class="col-6">
+          <div class="col-12">
+            <router-link
+              to="/campaignCreate"
+              v-slot="{ href, navigate }"
+            >
             <a
-              href="#"
+              :href="href"
               class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
             >
               <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
                 <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
-                <inline-svg src="media/svg/icons/Shopping/Box2.svg" />
+                <i class="menu-icon flaticon2-pen icon-3x text-primary"></i>
                 <!--end::Svg Icon-->
               </span>
               <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Projects</span
+                >Campaigns Create</span
               >
             </a>
-          </div>
-          <!--end::Item-->
-          <!--begin::Item-->
-          <div class="col-6">
-            <a
-              href="#"
-              class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
-            >
-              <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
-                <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group.svg-->
-                <inline-svg src="media/svg/icons/Communication/Group.svg" />
-                <!--end::Svg Icon-->
-              </span>
-              <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Customers</span
-              >
-            </a>
+            </router-link>
           </div>
           <!--end::Item-->
         </div>
         <div class="row gutter-b">
           <!--begin::Item-->
           <div class="col-6">
+            <router-link
+              to="/contacts"
+              v-slot="{ href, navigate }"
+            >
             <a
-              href="#"
+              :href="href"
               class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
             >
               <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
-                <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Chart-bar1.svg-->
-                <inline-svg src="media/svg/icons/Shopping/Chart-bar1.svg" />
+                <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group.svg-->
+                <i class="menu-icon flaticon2-avatar icon-3x text-primary"></i>
                 <!--end::Svg Icon-->
               </span>
               <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Email</span
+                >Contacts</span
               >
             </a>
+            </router-link>
           </div>
           <!--end::Item-->
           <!--begin::Item-->
           <div class="col-6">
+            <router-link
+              to="/contactslist"
+              v-slot="{ href, navigate }"
+            >
             <a
-              href="#"
+              :href="href"
               class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
+            >
+              <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
+                <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Chart-bar1.svg-->
+                <i class="menu-icon flaticon2-list icon-3x text-primary"></i>
+                <!--end::Svg Icon-->
+              </span>
+              <span class="d-block font-weight-bold font-size-h6 mt-2"
+                >Contact Lists</span
+              >
+            </a>
+            </router-link>
+          </div>
+          <!--end::Item-->
+        </div>
+        <div class="row gutter-b">
+          <!--begin::Item-->
+          <div class="col-6">
+            <router-link
+              to="/templates"
+              v-slot="{ href, navigate }"
+            >
+            <a
+              :href="href"
+              class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
             >
               <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
                 <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Color-profile.svg-->
-                <inline-svg src="media/svg/icons/Design/Color-profile.svg" />
+                <i class="menu-icon flaticon-doc icon-3x text-primary"></i>
+                <!--end::Svg Icon-->
+              </span>
+              <span class="d-block font-weight-bold font-size-h6 mt-2"
+                >Templates</span
+              >
+            </a>
+            </router-link>
+          </div>
+          <!--end::Item-->
+          <!--begin::Item-->
+          <div class="col-6">
+            <router-link
+              to="/profile"
+              v-slot="{ href, navigate }"
+            >
+            <a
+              :href="href"
+              class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
+              @click="navigate"
+            >
+              <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
+                <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Color-profile.svg-->
+                <i class="menu-icon flaticon2-settings icon-3x text-primary"></i>
                 <!--end::Svg Icon-->
               </span>
               <span class="d-block font-weight-bold font-size-h6 mt-2"
                 >Settings</span
               >
             </a>
-          </div>
-          <!--end::Item-->
-        </div>
-        <div class="row">
-          <!--begin::Item-->
-          <div class="col-6">
-            <a
-              href="#"
-              class="btn btn-block btn-light btn-hover-primary text-dark-50 text-center py-10 px-5"
-            >
-              <span class="svg-icon svg-icon-3x svg-icon-primary m-0">
-                <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Euro.svg-->
-                <inline-svg src="media/svg/icons/Shopping/Euro.svg" />
-                <!--end::Svg Icon-->
-              </span>
-              <span class="d-block font-weight-bold font-size-h6 mt-2"
-                >Orders</span
-              >
-            </a>
+            </router-link>
           </div>
           <!--end::Item-->
         </div>

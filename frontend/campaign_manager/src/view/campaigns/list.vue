@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column-fluid mt-12">
+  <div class="d-flex flex-column-fluid">
     <!--begin::Container-->
     <div class="container">
       <!--begin::Card-->
@@ -15,12 +15,14 @@
           </div>
           <div class="card-toolbar">
             <!--begin::Button-->
-            <a
-              href="javascript:;"
-              @click="createForm()"
-              class="btn btn-primary font-weight-bolder"
-              >Upload List</a
-            >
+            <router-link to="/campaignCreate" v-slot="{ href, navigate }">
+              <a
+                :href="href"
+                class="btn btn-primary font-weight-bolder"
+                @click="navigate"
+                >Create Campaign
+              </a>
+            </router-link>
             <!--end::Button-->
           </div>
         </div>
@@ -78,22 +80,29 @@
           >
             <thead>
               <tr>
-                <th>LIST NAME</th>
-                <th>Refrence</th>
-                <th>DESCRIPTION</th>
+                <th>Campaign NAME</th>
+                <th>E-mail Client</th>
+                <th>Created</th>
+                <th>Last Email Sent</th>
+                <th>Status</th>
                 <th class="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in data" :key="item.id">
-                <td>{{ item.name }}</td>
-                <td>{{ item.ref }}</td>
-                <td>{{ item.description }}</td>
+                <td>{{ item.campaign_name }}</td>
+                <td>{{ item.client }}</td>
+                <td>{{ item.created.substring(0, 10) }}</td>
+                <td>
+                    <span v-if="item.status!='Not yet started'">{{ item.last_sent.substring(0, 10) }}</span>
+                    <span v-if="item.status=='Not yet started'">-</span>
+                </td>
+                <td>{{ item.status }}</td>
                 <td class="text-right">
                   <a
                     href="javascript:;"
                     class="btn btn-sm btn-clean btn-icon"
-                    @click="ViewList(item.id,item.description,item.name)"
+                    @click="ViewList(item.id)"
                     title="View List Content"
                   >
                     <i class="la la-eye"></i
@@ -179,7 +188,7 @@ import VueCookies from 'vue-cookies';
 Vue.use(VueCookies)
 
 export default {
-  name: "ContactsListTable",
+  name: "CampaignList",
   data: () => {
     return {
       per_page: 10,
@@ -193,9 +202,10 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Token " + Vue.$cookies.get("key");
     axios
-      .get("api/contact/list/listTable?limit=10&offset=0")
+      .get("api/campaign/get?limit=10&offset=0")
       .then(function (response) {
-        store.dispatch("executeUpdateListContact", response["data"]);
+          console.log(response.data)
+        store.dispatch("executeupdateCampaignList", response["data"]);
       })
       .catch(function (error) {
         if (error.response) {
@@ -214,22 +224,20 @@ export default {
       store.state.contactListPageControls.table = false;
       store.state.contactListPageControls.create = true;
     },
-    ViewList(id,desc,title) {
-      store.state.viewListID = id;
-      store.state.viewListdesc = desc;
-      store.state.viewListTitle = title;
-      store.state.contactListPageControls.table = false;
-      store.state.contactListPageControls.view = true;
+    ViewList(id) {
+      console.log(id);
+      store.state.campaign.table = false;
+      store.state.campaign.view = true;
     },
     deleteContact(id) {
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
       axios.defaults.headers.post["Content-Type"] = "application/json";
       axios
-        .delete("api/contact/list/" + id + "/")
+        .delete("api/campaign/delete/" + id + "/")
         .then(function () {
-          for(var i=0; i< store.state.contactsList.length; i++){
-            if(store.state.contactsList[i]['id'] == id){
-              store.state.contactsList.splice(i,1)
+          for(var i=0; i< store.state.CampaignList.length; i++){
+            if(store.state.CampaignList[i]['id'] == id){
+              store.state.CampaignList.splice(i,1)
             }
           }
         })
@@ -252,13 +260,13 @@ export default {
         "Token " + Vue.$cookies.get("key");
       axios
         .get(
-          "api/contact/list/listTable?limit=" +
+          "api/campaign/get?limit=" +
             this.per_page +
             "&offset=0&search=" +
             e.target.value
         )
         .then(function (response) {
-          store.dispatch("executeUpdateListContact", response["data"]);
+          store.dispatch("executeupdateCampaignList", response["data"]);
         })
         .catch(function (error) {
           if (error.response) {
@@ -275,7 +283,7 @@ export default {
     getPage(type){
       var link = ""
       if(type=="first"){
-        link = "api/contact/list/listTable?limit=" +this.per_page + "&offset=0";
+        link = "api/campaign/get?limit=" +this.per_page + "&offset=0";
       } else if (type=="next"){
         if (store.state.ContatNext == null)  return;
         link = store.state.ContatNext;
@@ -285,7 +293,7 @@ export default {
         link = store.state.ContatPrev;
         link = link.replace("http://127.0.0.1:8000/","")
       } else{
-        link = "api/contact/list/listTable?limit=" +this.per_page + "&offset=" + parseInt(store.state.ContatCount-this.per_page-1);
+        link = "api/campaign/get?limit=" +this.per_page + "&offset=" + parseInt(store.state.ContatCount-this.per_page-1);
       }
       if(this.searchField != ""){
         link = link + "&search=" + this.searchField;
@@ -297,7 +305,7 @@ export default {
       axios
         .get(link)
         .then(function (response) {
-          store.dispatch("executeUpdateListContact", response["data"]);
+          store.dispatch("executeupdateCampaignList", response["data"]);
         })
         .catch(function (error) {
           if (error.response) {
@@ -318,9 +326,9 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Token " + Vue.$cookies.get("key");
     axios
-      .get("api/contact/list/listTable?limit="+e.target.value+"&offset=0&search=" + this.searchField)
+      .get("api/campaign/get?limit="+e.target.value+"&offset=0&search=" + this.searchField)
       .then(function (response) {
-        store.dispatch("executeUpdateListContact", response["data"]);
+        store.dispatch("executeupdateCampaignList", response["data"]);
       })
       .catch(function (error) {
         if (error.response) {
@@ -337,7 +345,7 @@ export default {
   },
   computed: {
     data() {
-      return store.state.contactsList;
+      return store.state.CampaignList;
     },
   },
 };

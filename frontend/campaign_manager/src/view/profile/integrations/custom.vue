@@ -52,6 +52,7 @@
                         <v-row class="my-4">
                             <v-text-field
                                 v-model="custom_IMAP_HOST"
+                              :rules="[rules.required]"
                                 label="IMAP Host"
                                 placeholder="imap.host.com"
                                 class="form-control form-control-lg form-control-solid"
@@ -60,6 +61,7 @@
                         <v-row class="my-4">
                             <v-text-field
                                 v-model="custom_IMAP_Port"
+                              :rules="[rules.required]"
                                 label="IMAP Port"
                                 class="form-control form-control-lg form-control-solid"
                             ></v-text-field>
@@ -107,6 +109,7 @@
                         <v-row class="my-4">
                             <v-text-field
                                 v-model="custom_SMTP_HOST"
+                              :rules="[rules.required]"
                                 label="SMTP Host"
                                 placeholder="smtp.host.com"
                                 class="form-control form-control-lg form-control-solid"
@@ -115,6 +118,7 @@
                         <v-row class="my-4">
                             <v-text-field
                                 v-model="custom_SMTP_Port"
+                              :rules="[rules.required]"
                                 label="SMTP Port"
                                 class="form-control form-control-lg form-control-solid"
                             ></v-text-field>

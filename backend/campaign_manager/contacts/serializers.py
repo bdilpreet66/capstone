@@ -16,7 +16,6 @@ class getContactInfoSerializer(serializers.HyperlinkedModelSerializer):
 
 class getContactListSerializer(serializers.ModelSerializer):
     contact = getContactInfoSerializer(read_only=True,many=True)
-    print(contact)
     class Meta:
         model = contactList
         fields = ('id','description','name','ref','contact')

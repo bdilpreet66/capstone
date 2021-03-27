@@ -52,10 +52,19 @@ export default new Vuex.Store({
             active: [],
             gmail_link: ""
         },
+        CampaignList: [],
+        CampaignCount: "",
+        CampaignNext: "",
+        CampaignPrev: "",
+        campaign: {
+            table: true,
+            reports: false
+        },
         message: "",
         outlook: false,
         gmail: false,
         custom: false,
+        TemplateList: [],
     },
     mutations: {
         updateToken: (state, payload) => {
@@ -85,6 +94,12 @@ export default new Vuex.Store({
             state.ContatListNext = payload["next"];
             state.ContatListPrev = payload["previous"];
         },
+        updateCampaignList: (state, payload) => {
+            state.CampaignList = payload["results"];
+            state.CampaignCount = payload["count"];
+            state.CampaignNext = payload["next"];
+            state.CampaignPrev = payload["previous"];
+        },
         updategmail_link: (state, payload) => {
             state.integration.gmail_link = payload;
         },
@@ -107,6 +122,9 @@ export default new Vuex.Store({
         },
         executeUpdategmail_link: (context, payload) => {
             context.commit("updategmail_link", payload)
+        },
+        executeupdateCampaignList: (context, payload) => {
+            context.commit("updateCampaignList", payload)
         },
     },
     modules: {}

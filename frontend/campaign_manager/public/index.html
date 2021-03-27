@@ -12,9 +12,21 @@ Use below html tag for RTL version
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Roboto:300,400,500,600,700|Material+Icons" rel="stylesheet">
     <title>Vue APP</title>
+    <style>
+        .noScroolbar {
+            overflow-y: scroll;
+            overflow-x: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .noScroolbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 </head>
 
-<body>
+<body class="noScroolbar">
     <noscript>
       <strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

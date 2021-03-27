@@ -36,6 +36,16 @@ var router = new Router({
         name: 'Templates',
         component: () =>
             import ("@/view/templates.vue")
+    }, {
+        path: "/campaigns",
+        name: 'Campaign',
+        component: () =>
+            import ("@/view/Campaigns.vue")
+    }, {
+        path: "/campaignCreate",
+        name: 'CreateCampaign',
+        component: () =>
+            import ("@/view/CreateCampaign.vue")
     }, ]
 });
 
