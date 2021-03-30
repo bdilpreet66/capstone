@@ -136,39 +136,29 @@
           <!--begin:Heading-->
           <h5 class="mb-5">Recent Schedules</h5>
           <!--end:Heading-->
-          <template v-for="(item, i) in list">
+          <template v-for="item in data">
             <!--begin::Item -->
             <div
               class="d-flex align-items-center rounded p-5 gutter-b"
-              v-bind:class="`bg-light-${item.type}`"
-              v-bind:key="i"
+              v-bind:class="`bg-light-success`"
+              v-bind:key="item.id"
             >
-              <span
-                class="svg-icon mr-5"
-                v-bind:class="`svg-icon-${item.type}`"
-              >
-                <span class="svg-icon svg-icon-lg">
-                  <!--begin::Svg Icon-->
-                  <inline-svg :src="item.svg" />
-                  <!--end::Svg Icon-->
-                </span>
-              </span>
               <div class="d-flex flex-column flex-grow-1 mr-2">
                 <a
                   href="#"
-                  class="font-weight-normal text-dark-75 text-hover-primary font-size-lg mb-1"
+                  class="font-weight-normal text-success text-hover-info font-size-lg mb-1"
                 >
-                  {{ item.title }}
+                  {{ item.campaign_name }}
                 </a>
-                <span class="text-muted font-size-sm">
-                  {{ item.desc }}
+                <span class="text-info font-size-sm">
+                  {{ item.created.substring(0, 10) }}
                 </span>
               </div>
               <span
                 class="font-weight-bolder py-1 font-size-lg"
-                v-bind:class="`text-${item.type}`"
+                v-bind:class="`text-primary`"
               >
-                {{ item.alt }}
+                {{ item.client }}
               </span>
             </div>
             <!--end::Item -->
@@ -189,8 +179,11 @@
 
 <script>
 import KTLayoutQuickUser from "@/assets/js/layout/extended/quick-user.js";
+import store from "@/core/services/store/store.js";
 import KTOffcanvas from "@/assets/js/components/offcanvas.js";
 import Vue from 'vue';
+import Swal from "sweetalert2";
+import axios from "axios";
 import VueCookies from 'vue-cookies';
 Vue.use(VueCookies)
 import router from "@/router.js";
@@ -203,6 +196,26 @@ export default {
     };
   },
   mounted() {
+    axios.defaults.baseURL = "http://127.0.0.1:8000/";
+    axios.defaults.headers.post["Content-Type"] = "application/json";
+    axios.defaults.headers.common["Authorization"] =
+      "Token " + Vue.$cookies.get("key");
+    axios
+      .get("api/campaign/get?limit=6&offset=0&ordering=created")
+      .then(function (response) {
+        store.dispatch("executeupdateCampaignList", response["data"]);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          Swal.fire({
+            title: "Error",
+            text: "Unable to get contacts",
+            icon: "error",
+            confirmButtonClass: "btn btn-secondary",
+            heightAuto: false,
+          });
+        }
+      });
     // Init Quick User Panel
     KTLayoutQuickUser.init(this.$refs["kt_quick_user"]);
   },
@@ -236,7 +249,10 @@ export default {
     },    
     name() {
       return Vue.$cookies.get("first_name") + " " + Vue.$cookies.get("last_name");
-    }
+    },
+    data() {
+      return store.state.CampaignList;
+    },
   }
 };
 </script>
