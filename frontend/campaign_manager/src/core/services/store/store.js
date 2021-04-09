@@ -45,6 +45,7 @@ export default new Vuex.Store({
         contactListPageControls: {
             table: true,
             create: false,
+            new: false,
             view: false
         },
         integration: {

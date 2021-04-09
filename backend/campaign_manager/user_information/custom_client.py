@@ -27,23 +27,20 @@ def send_message(message,client_id):
     USERNAME = obj.smtpusername
     PASSWORD = obj.smtp_password
     smtp_host = obj.smtp_host
-    smtp_port = obj.smtp_port
+    smtp_port = int(obj.smtp_port)
 
     if obj.smtp_type == "STARTTLS":
-        with smtplib.SMTP(smtp_host,smtp_port) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
-
-            smtp.login(USERNAME,PASSWORD)
-
-            smtp.send_message(message)
+        with smtplib.SMTP(smtp_host,smtp_port) as s:
+            s.ehlo()
+            s.starttls()
+            s.ehlo()
+            s.login(USERNAME,PASSWORD)
+            s.send_message(message)
 
     elif obj.smtp_type == "Enable SSL":
-        with smtplib.SMTP_SSL(smtp_host,smtp_port) as smtp:
-            smtp.login(USERNAME,PASSWORD)
-
-            smtp.send_message(message)
+        with smtplib.SMTP_SSL(smtp_host,smtp_port) as s:
+            s.login(USERNAME,PASSWORD)
+            s.send_message(message)
 
 
 def get_bounced_emails(client_id,email_list):

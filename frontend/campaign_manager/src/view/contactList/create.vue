@@ -317,7 +317,8 @@ export default {
             data.append('dfield',this.dfield);
             data.append('afield',this.afield);
             data.append('bfield',this.bfield);
-            data.append('pfield',this.pfield);            axios.defaults.baseURL = "http://127.0.0.1:8000/";
+            data.append('pfield',this.pfield);
+            axios.defaults.baseURL = "http://127.0.0.1:8000/";
             axios.defaults.headers.post["Content-Type"] = "application/json";
                 axios.defaults.headers.common["Authorization"] =
                     "Token " + Vue.$cookies.get("key");

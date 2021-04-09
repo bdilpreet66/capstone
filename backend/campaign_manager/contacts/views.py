@@ -107,9 +107,9 @@ class getContactListViewset(viewsets.ViewSet):
             user = user,
             name = data['name'],
             ref = data['ref'],
-            description = data['description']
+            description = data['desc']
         )
-        for i in data['lis']:
+        for i in data['list']:
             obj.contact.add(Contact.objects.get(id=i))
         obj.save()
         serializer = getContactListSerializer(obj,many=False)

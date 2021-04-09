@@ -10,7 +10,7 @@ router.register(r'template/manage',getTemplateView,basename='manageTemplate')
 router.register(r'template/get/message',getTemplateMessageView,basename='getTemplateMessage')
 router.register(r'get/timezone',getTimezonesView,basename='getTimezone')
 router.register(r'create',createCampaignView,basename='createCampaign')
-router.register(r'delete',createCampaignView,basename='deleteCampaign')
+router.register(r'delete',deleteCampaignView,basename='deleteCampaign')
 
 app_name = 'campaigns'
 

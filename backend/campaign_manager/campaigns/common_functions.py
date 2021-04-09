@@ -71,6 +71,7 @@ def process_open_id(campaign_id,message_id):
 
 
 def change_message(campaign_id,message_id,message):
+    message = "<html><body>" + message + "</body></html>"
     soup = BeautifulSoup(message,'html')
     a_tag = soup.find_all('a')
 

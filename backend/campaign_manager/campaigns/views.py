@@ -164,7 +164,7 @@ class createCampaignView(viewsets.ViewSet):
             date_object = date_object.replace(tzinfo=pytz.timezone(timezone_info)).astimezone(tz=pytz.timezone("UTC"))
         
         Send_Emails.apply_async(
-            eta = date_object,
+            # eta = date_object,
             kwargs = {
                 'campaign_id':camp_obj.id
                 }
@@ -214,5 +214,6 @@ class deleteCampaignView(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
 
     def destroy(self,request,pk):
+        print(pk)
         Campaign.objects.get(id=pk).delete()
         return Response('success')

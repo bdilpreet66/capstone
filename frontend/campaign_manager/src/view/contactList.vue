@@ -4,6 +4,7 @@
       <ContactsListTable v-if="showtable"/>
       <ContactsListCreateForm v-if="showform"/>
       <ContactsListInfo v-if="Info"/>
+      <ContactsListCreateListForm  v-if="newList"/>
     <!--end::Container-->
   </div>
 </template>
@@ -12,6 +13,7 @@
 import ContactsListTable from "@/view/contactList/table.vue"
 import ContactsListCreateForm from "@/view/contactList/create.vue"
 import ContactsListInfo from "@/view/contactList/view.vue"
+import ContactsListCreateListForm from "@/view/contactList/new_list.vue"
 import store from "@/core/services/store/store.js";
 
 export default {
@@ -19,7 +21,8 @@ export default {
   components: {
     ContactsListTable,
     ContactsListCreateForm,
-    ContactsListInfo
+    ContactsListInfo,
+    ContactsListCreateListForm
   },
   data: () => {
     return {
@@ -39,7 +42,10 @@ export default {
     },
     Info(){
       return store.state.contactListPageControls.view;
-    }
+    },
+    newList(){
+      return store.state.contactListPageControls.new;
+    },
   },
 };
 </script>
