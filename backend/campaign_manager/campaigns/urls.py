@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import deleteCampaignView, campaignTable, getUnSubscriptions, getClicks, getOpens, createCampaignView, getTemplateView, getTemplateMessageView, TemplateTable, getTemplateListView, getTemplatedataView, getTimezonesView
+from .views import Downloadfile, getReportsViewset, deleteCampaignView, campaignTable, getUnSubscriptions, getClicks, getOpens, createCampaignView, getTemplateView, getTemplateMessageView, TemplateTable, getTemplateListView, getTemplatedataView, getTimezonesView
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 
@@ -11,6 +11,7 @@ router.register(r'template/get/message',getTemplateMessageView,basename='getTemp
 router.register(r'get/timezone',getTimezonesView,basename='getTimezone')
 router.register(r'create',createCampaignView,basename='createCampaign')
 router.register(r'delete',deleteCampaignView,basename='deleteCampaign')
+router.register(r'viewReport',getReportsViewset,basename='report')
 
 app_name = 'campaigns'
 
@@ -23,6 +24,8 @@ urlpatterns = [
     re_path(r'click/(?P<pk_1>\d+)/(?P<pk_2>\d+)/(?P<pk_3>\d+)/',getClicks, name="clicks"),
     # opened emails handler
     re_path(r'open/(?P<pk_1>\d+)/(?P<pk_2>\d+)/',getOpens, name="opens"),
+    # export a file
+    re_path(r'download/(?P<pk>\d+)/',Downloadfile, name="download"),
 ]
 
 urlpatterns += router.urls

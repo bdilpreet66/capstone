@@ -204,7 +204,6 @@ export default {
     axios
       .get("api/campaign/get?limit=10&offset=0")
       .then(function (response) {
-          console.log(response.data)
         store.dispatch("executeupdateCampaignList", response["data"]);
       })
       .catch(function (error) {
@@ -225,9 +224,9 @@ export default {
       store.state.contactListPageControls.create = true;
     },
     ViewList(id) {
-      console.log(id);
+      store.state.selectedReport = id;
       store.state.campaign.table = false;
-      store.state.campaign.view = true;
+      store.state.campaign.reports = true;
     },
     deleteContact(id) {
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
@@ -320,7 +319,6 @@ export default {
         });
     },
     setPageSize(e) {
-      console.log();
       axios.defaults.baseURL = "http://127.0.0.1:8000/";
     axios.defaults.headers.post["Content-Type"] = "application/json";
     axios.defaults.headers.common["Authorization"] =

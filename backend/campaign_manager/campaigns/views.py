@@ -1,26 +1,26 @@
+import csv
+from datetime import datetime, timezone
+from pprint import pprint
+
+import pytz
+from contacts.models import Contact, contactList
 from django.contrib.auth.models import User
 from django.shortcuts import HttpResponse, redirect, render
-from rest_framework import status, views, viewsets
+from rest_framework import generics, status, views, viewsets
 from rest_framework.authentication import (SessionAuthentication,
                                            TokenAuthentication)
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Template, Campaign
-from .serializers import getTemplateSerializer, getTemplateListSerializer, getcampaignSerializer
-from rest_framework import generics
-from contacts.models import contactList
-
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.filters import OrderingFilter, SearchFilter
-import pytz
-from pprint import pprint
-from datetime import datetime, timezone
-
-from .common_functions import (check_unsubscribe,
-                                         process_click_links, process_open_id)
-
+from .common_functions import (check_unsubscribe, process_click_links,
+                               process_open_id)
+from .models import Campaign, MessageInfo, Template
+from .serializers import (getcampaignSerializer, getTemplateListSerializer,
+                          getTemplateSerializer)
 from .task import Send_Emails
+
 # Create your views here.
 
 class getTemplateView(viewsets.ViewSet):
@@ -132,9 +132,11 @@ class createCampaignView(viewsets.ViewSet):
         if len(Campaign.objects.filter(campaign_name=data['name']).filter(user=request.user)) != 0:
             return Response(status=409)
         obj = contactList.objects.get(id = int(data['selectedList']))
+        total = 0
         clist = []
         for i in obj.contact.all():
             clist.append(str(i.id))
+            total += 1
         clist = "|".join(clist)
         with open(f"media/temData/{request.user.username}_{data['name']}_clist.txt","w") as f:
             f.write(clist)
@@ -152,7 +154,8 @@ class createCampaignView(viewsets.ViewSet):
             display = data['display_name'],
             replyTo = data['reply_to'],
             redirect_urls = f"media/temData/{request.user.username}_{data['name']}_urls.txt",
-            time_delta = int(data["time_delta"])
+            time_delta = int(data["time_delta"]),
+            total_emails = total
         )
             
         timezone_info = data["tzone"]
@@ -217,3 +220,78 @@ class deleteCampaignView(viewsets.ViewSet):
         print(pk)
         Campaign.objects.get(id=pk).delete()
         return Response('success')
+
+
+
+class getReportsViewset(viewsets.ViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def update(self,request,pk):
+        obj = Campaign.objects.get(id=pk)
+        mobj = MessageInfo.objects.filter(campaign=obj)[:10]
+        clist = []
+        for i in mobj:
+            lis = []
+            cobj = i.contact
+            lis.append(cobj.first_name)
+            lis.append(cobj.last_name)
+            lis.append(cobj.email)
+            lis.append(cobj.mobile)
+            lis.append(cobj.address)
+            lis.append(i.invalid)
+            lis.append(i.bounced)
+            lis.append(i.clicks)
+            lis.append(i.opens)
+            lis.append(i.unsubscribe)
+            clist.append(lis)
+        data = {
+                'id': obj.id,
+                'campaign_name': obj.campaign_name,
+                'delivered': obj.delivered,
+                'total_emails': obj.total_emails,
+                'clicked': obj.clicked,
+                'opened': obj.opened,
+                'invalid': obj.invalid,
+                'unsubscribed': obj.unsubscribed,
+                'bounced': obj.bounced,
+                'sent_emails': obj.sent_emails,
+                'status': obj.status,
+                'client': obj.client,
+                'last_sent': obj.last_sent,
+                'created': obj.created,
+                'subject': obj.subject,
+                'list': clist,
+            }
+        return Response(data)
+
+def Downloadfile(request,pk):
+    if request.method == "GET":
+        cobj = Campaign.objects.get(id=pk)
+        mobj = MessageInfo.objects.filter(campaign=cobj)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{cobj.campaign_name}.csv"'
+        
+        writer = csv.writer(response,delimiter=',')
+        writer.writerow(['first_name','last_name','email','mobile','address','bank_details','reference','description','invalid','bounced','clicks','opens','unsubscribe'])
+        
+        for i in mobj:
+            lis = []
+            cobj = i.contact
+            lis.append(cobj.first_name)
+            lis.append(cobj.last_name)
+            lis.append(cobj.email)
+            lis.append(cobj.mobile)
+            lis.append(cobj.address)
+            lis.append(cobj.bank)
+            lis.append(cobj.ref)
+            lis.append(cobj.desc)
+            lis.append(i.invalid)
+            lis.append(i.bounced)
+            lis.append(i.clicks)
+            lis.append(i.opens)
+            lis.append(i.unsubscribe)
+
+            writer.writerow(lis)
+
+        return response

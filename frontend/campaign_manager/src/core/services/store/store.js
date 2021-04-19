@@ -66,6 +66,7 @@ export default new Vuex.Store({
         gmail: false,
         custom: false,
         TemplateList: [],
+        selectedReport: -1,
     },
     mutations: {
         updateToken: (state, payload) => {

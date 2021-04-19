@@ -28,7 +28,7 @@ export default {
       return store.state.campaign.table;
     },
     showReport() {
-      return store.state.campaign.view;
+      return store.state.campaign.reports;
     },
   },
 };
