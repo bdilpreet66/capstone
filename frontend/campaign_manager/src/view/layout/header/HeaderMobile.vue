@@ -6,7 +6,7 @@
   >
     <!--begin::Logo-->
     <a href="/dashboard">
-      <img alt="Logo" :src="headerLogo" class="logo-default max-h-30px" />
+      <img alt="Logo" src="@/assets/logo.png" class="logo-default max-h-40px" />
     </a>
     <!--end::Logo-->
     <!--begin::Toolbar-->

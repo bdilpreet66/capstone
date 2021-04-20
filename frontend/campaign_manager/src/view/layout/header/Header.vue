@@ -28,8 +28,8 @@
           <router-link to="/dashboard">
             <img
               alt="Logo"
-              :src="layoutConfig('self.logo.default')"
-              class="logo-sticky max-h-35px"
+              src="@/assets/logo.png"
+              class="logo-sticky max-h-50px"
             />
           </router-link>
         </div>

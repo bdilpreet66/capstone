@@ -21,8 +21,8 @@
           <div class="d-flex flex-center mb-15">
             <a href="#">
               <img
-                src="media/logos/logo-letter-13.png"
-                class="max-h-75px"
+                src="@/assets/logo.png"
+                class="max-h-200px"
                 alt=""
               />
             </a>
