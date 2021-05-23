@@ -83,13 +83,13 @@
                     <span></span>Remember me</label
                   >
                 </div>
-                <a
+                <!-- <a
                   class="text-white opacity-30 font-size-h6 font-weight-bolder"
                   id="kt_login_forgot"
                   style="cursor: pointer"
                   @click="showForm('forgot')"
                   >Forgot Password ?</a
-                >
+                > -->
               </div>
               <div class="pb-lg-0 pb-5 mt-6">
                 <button
@@ -199,59 +199,6 @@
             </form>
           </div>
           <!--end::Signup-->
-          <!--begin::Forgot-->
-          <div class="login-form login-forgot">
-            <div class="mb-20">
-              <h3 class="opacity-40 font-weight-normal">Forgot Password</h3>
-              <p class="opacity-40">Enter your username to send reset email:</p>
-            </div>
-            <!--begin::Form-->
-            <form
-              class="form"
-              novalidate="novalidate"
-              id="kt_login_forgot_form"
-              ref="kt_login_forgot_form"
-            >
-              <div class="pb-13 pt-lg-0 pt-5">
-                <h3
-                  class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg"
-                >
-                  Forgotten Password ?
-                </h3>
-                <p class="text-muted font-weight-bold font-size-h4">
-                  Enter your email to reset your password
-                </p>
-              </div>
-              <div class="form-group">
-                <input
-                  class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8"
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  autocomplete="off"
-                />
-              </div>
-
-              <div class="pb-lg-0 pb-5 mt-6">
-                <button
-                  type="button"
-                  id="kt_login_forgot_submit"
-                  class="btn btn-pill btn-primary opacity-90 px-15 py-3"
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  id="kt_login_forgot_cancel"
-                  class="btn btn-pill btn-primary opacity-90 px-15 py-3 ml-6"
-                  @click="showForm('signin')"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-          <!--end::Forgot-->
         </div>
       </div>
     </div>

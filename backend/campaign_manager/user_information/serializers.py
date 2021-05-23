@@ -37,7 +37,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             username = validated_data['username'],
             is_superuser = False,
             is_staff = False,
-            is_active = False
+            is_active = True
         )
         obj.set_password(validated_data['password'])
         obj.save()
